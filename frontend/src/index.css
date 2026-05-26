@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+}
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.card-border-hover:hover {
+    border-color: #444444 !important;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #000000;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #222222;
+}
+
+/* News Content Styling (for rendered HTML content) */
+.news-content p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #e5e7eb;
+    margin-bottom: 1.5rem;
+}
+
+.news-content h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+}
+
+.news-content h3 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.news-content a {
+    color: #3b82f6;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.news-content a:hover {
+    color: #60a5fa;
+}
+
+.news-content blockquote {
+    border-left: 4px solid #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+    padding: 1.25rem 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-style: italic;
+    color: #9ca3af;
+}
+
+.news-content ul {
+    list-style-type: disc;
+    padding-left: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #e5e7eb;
+}
+
+.news-content ol {
+    list-style-type: decimal;
+    padding-left: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #e5e7eb;
+}
+
+.news-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+}
+
+.news-content pre {
+    background: #0d0d0d;
+    border: 1px solid #222222;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    margin: 2rem 0;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.news-content code {
+    background: #1a1a1a;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #ff79c6;
+}
+
+.news-content pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: #f8f8f2;
+}
+
+.news-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 1rem;
+    text-align: left;
+    border: 1px solid #222222;
+}
+
+.news-content th {
+    background: #111111;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid #222222;
+    color: #ffffff;
+}
+
+.news-content td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #111111;
+    color: #d1d5db;
+}
+
+.news-content tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}

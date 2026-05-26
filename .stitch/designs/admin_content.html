@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444444;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#e5e2e1",
+                        "secondary-container": "#464747",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-bright": "#3a3939",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#c4c7c8",
+                        "on-secondary": "#303031",
+                        "on-tertiary": "#2f3131",
+                        "on-tertiary-container": "#636565",
+                        "on-secondary-fixed-variant": "#464747",
+                        "error-container": "#93000a",
+                        "secondary": "#c7c6c6",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "tertiary-container": "#e2e2e2",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "background": "#131313",
+                        "outline-variant": "#444748",
+                        "inverse-surface": "#e5e2e1",
+                        "surface": "#131313",
+                        "on-primary-fixed": "#1a1c1c",
+                        "on-secondary-container": "#b5b5b5",
+                        "on-surface": "#e5e2e1",
+                        "inverse-primary": "#5d5f5f",
+                        "surface-variant": "#353534",
+                        "primary": "#ffffff",
+                        "outline": "#8e9192",
+                        "inverse-on-surface": "#313030",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#353534",
+                        "on-primary": "#2f3131",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "primary-container": "#e2e2e2",
+                        "surface-tint": "#c6c6c7",
+                        "surface-dim": "#131313",
+                        "on-primary-container": "#636565",
+                        "surface-container": "#201f1f",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "tertiary-fixed": "#e2e2e2",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#454747",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "secondary-fixed": "#e3e2e2",
+                        "surface-container-low": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "max-width": "1280px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Geist"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-md": ["13px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- Shell Container -->
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-6 px-4 gap-4 z-50">
+<div class="flex flex-col gap-1 mb-6 px-2">
+<h1 class="font-headline-md text-headline-md text-primary">Admin Console</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-60">v1.0.4</p>
+</div>
+<nav class="flex flex-col gap-1 flex-grow">
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+                    RSS Sources
+                </a>
+<!-- Active Item -->
+<a class="flex items-center gap-3 py-2.5 px-3 rounded bg-surface-container-high text-primary border-r-2 border-primary transition-all duration-150 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="article">article</span>
+                    Content
+                </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                    Users
+                </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                    Logs
+                </a>
+</nav>
+<button class="mb-4 w-full bg-primary text-on-primary py-2.5 px-4 rounded font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                Add New Source
+            </button>
+<div class="flex flex-col gap-1 border-t border-outline-variant pt-4">
+<a class="flex items-center gap-3 py-2 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-3 py-2 px-3 rounded text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all duration-150 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</div>
+</aside>
+<!-- Content Canvas -->
+<main class="flex-grow ml-64 p-margin-desktop min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">İçerik Yönetimi</h2>
+<p class="text-on-surface-variant mt-1 font-body-md opacity-80">Haber akışlarını denetleyin ve AI özet kalitesini izleyin.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all duration-200 active:scale-95 group">
+<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500" data-icon="sync">sync</span>
+                    Hemen Haber Çek
+                </button>
+</header>
+<!-- Content Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex-grow flex flex-col">
+<!-- Table Controls / Filter Bar -->
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="bg-background border border-outline-variant rounded-md pl-10 pr-4 py-1.5 font-body-md text-on-surface w-64 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Başlıklarda ara..." type="text"/>
+</div>
+<div class="flex border border-outline-variant rounded-md overflow-hidden">
+<button class="px-3 py-1.5 bg-surface-container-high text-primary font-label-sm text-label-sm">Tümü</button>
+<button class="px-3 py-1.5 hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors">Son 24s</button>
+<button class="px-3 py-1.5 hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors">Düşük Puan</button>
+</div>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span>Gösteriliyor: <strong>148 Haber</strong></span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="more_vert">more_vert</span>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Haber Başlığı</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Kaynak</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">AI Özet Kalitesi</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Yayın Tarihi</th>
+<th class="py-4 px-6 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">İşlemler</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#111111]">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150 group">
+<td class="py-5 px-6">
+<div class="flex flex-col gap-1">
+<span class="font-body-md text-on-surface font-medium block truncate max-w-[400px]">Küresel Çip Üretiminde Yeni Rekor: Teknoloji Devleri Birleşiyor</span>
+<span class="text-[11px] text-on-surface-variant/50 font-label-sm">ID: HB-84920-TR</span>
+</div>
+</td>
+<td class="py-5 px-6">
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-container-high border border-outline-variant rounded">Reuters</span>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[94%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary">9.4/10</span>
+</div>
+</td>
+<td class="py-5 px-6 text-on-surface-variant font-label-md text-label-md">
+                                    14 May 2024, 09:12
+                                </td>
+<td class="py-5 px-6 text-right">
+<button class="p-2 hover:bg-error-container hover:text-error rounded transition-all active:scale-90" title="Sil">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150 group">
+<td class="py-5 px-6">
+<div class="flex flex-col gap-1">
+<span class="font-body-md text-on-surface font-medium block truncate max-w-[400px]">Merkez Bankası Faiz Kararı Açıklandı: Piyasalarda Son Durum</span>
+<span class="text-[11px] text-on-surface-variant/50 font-label-sm">ID: HB-84921-TR</span>
+</div>
+</td>
+<td class="py-5 px-6">
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-container-high border border-outline-variant rounded">Bloomberg</span>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary">8.2/10</span>
+</div>
+</td>
+<td class="py-5 px-6 text-on-surface-variant font-label-md text-label-md">
+                                    14 May 2024, 08:45
+                                </td>
+<td class="py-5 px-6 text-right">
+<button class="p-2 hover:bg-error-container hover:text-error rounded transition-all active:scale-90" title="Sil">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150 group">
+<td class="py-5 px-6">
+<div class="flex flex-col gap-1">
+<span class="font-body-md text-on-surface font-medium block truncate max-w-[400px]">Mars Görevi İçin Geri Sayım: SpaceX Starship Fırlatılışı</span>
+<span class="text-[11px] text-on-surface-variant/50 font-label-sm">ID: HB-84922-TR</span>
+</div>
+</td>
+<td class="py-5 px-6">
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-container-high border border-outline-variant rounded">NASA Hub</span>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-error h-full w-[45%]"></div>
+</div>
+<span class="font-label-md text-label-md text-error">4.5/10</span>
+</div>
+</td>
+<td class="py-5 px-6 text-on-surface-variant font-label-md text-label-md">
+                                    14 May 2024, 07:30
+                                </td>
+<td class="py-5 px-6 text-right">
+<button class="p-2 hover:bg-error-container hover:text-error rounded transition-all active:scale-90" title="Sil">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150 group">
+<td class="py-5 px-6">
+<div class="flex flex-col gap-1">
+<span class="font-body-md text-on-surface font-medium block truncate max-w-[400px]">Yapay Zeka Etik Yasası: Avrupa Birliği'nden Sert Adımlar</span>
+<span class="text-[11px] text-on-surface-variant/50 font-label-sm">ID: HB-84923-TR</span>
+</div>
+</td>
+<td class="py-5 px-6">
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-container-high border border-outline-variant rounded">DW News</span>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[91%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary">9.1/10</span>
+</div>
+</td>
+<td class="py-5 px-6 text-on-surface-variant font-label-md text-label-md">
+                                    14 May 2024, 06:15
+                                </td>
+<td class="py-5 px-6 text-right">
+<button class="p-2 hover:bg-error-container hover:text-error rounded transition-all active:scale-90" title="Sil">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150 group">
+<td class="py-5 px-6">
+<div class="flex flex-col gap-1">
+<span class="font-body-md text-on-surface font-medium block truncate max-w-[400px]">Yerli Otomobil Togg: Yeni Yazılım Güncellemesi Yayınlandı</span>
+<span class="text-[11px] text-on-surface-variant/50 font-label-sm">ID: HB-84924-TR</span>
+</div>
+</td>
+<td class="py-5 px-6">
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-container-high border border-outline-variant rounded">AA Ekonomi</span>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-24 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[88%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary">8.8/10</span>
+</div>
+</td>
+<td class="py-5 px-6 text-on-surface-variant font-label-md text-label-md">
+                                    13 May 2024, 23:55
+                                </td>
+<td class="py-5 px-6 text-right">
+<button class="p-2 hover:bg-error-container hover:text-error rounded transition-all active:scale-90" title="Sil">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer / Pagination -->
+<footer class="p-4 border-t border-outline-variant bg-surface-container-low mt-auto flex justify-between items-center">
+<div class="text-on-surface-variant font-label-sm text-label-sm">
+                        Sayfa 1 / 12
+                    </div>
+<div class="flex gap-2">
+<button class="p-1.5 border border-outline-variant rounded hover:bg-surface-container-high text-on-surface-variant transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-3 py-1 font-label-md text-label-md bg-surface-container-high text-primary rounded border border-outline-variant">1</button>
+<button class="px-3 py-1 font-label-md text-label-md hover:bg-surface-container-high text-on-surface-variant rounded transition-colors">2</button>
+<button class="px-3 py-1 font-label-md text-label-md hover:bg-surface-container-high text-on-surface-variant rounded transition-colors">3</button>
+<button class="p-1.5 border border-outline-variant rounded hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</div>
+<!-- Dashboard Stats Overlay (Minimalist) -->
+<div class="grid grid-cols-4 gap- gutter mt-8">
+<div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase mb-2">Bugünkü Özet</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-primary">1,204</span>
+<span class="text-[#00FF00] text-[12px] font-label-sm">+12%</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase mb-2">Ort. Kalite</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-primary">8.7</span>
+<span class="text-on-surface-variant text-[12px] font-label-sm">/10</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase mb-2">Hatalı Kaynak</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-error">3</span>
+<span class="text-on-surface-variant text-[12px] font-label-sm">aktif</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-lg">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase mb-2">Kullanılan Token</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-primary">4.2M</span>
+<span class="text-on-surface-variant text-[12px] font-label-sm">bu ay</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Interaction Script -->
+<script>
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.innerText.includes('Hemen Haber Çek')) {
+                    const icon = this.querySelector('.material-symbols-outlined');
+                    icon.classList.add('animate-spin');
+                    const originalText = this.innerHTML;
+                    this.innerHTML = `<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span> Çekiliyor...`;
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        icon.classList.remove('animate-spin');
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                        // Atmospheric notification logic would go here
+                    }, 2000);
+                }
+            });
+        });
+
+        // Row deletion simulation
+        document.querySelectorAll('.hover\\:bg-error-container').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    row.remove();
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

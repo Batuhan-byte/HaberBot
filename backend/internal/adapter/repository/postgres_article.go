@@ -1,0 +1,231 @@
+// Package repository provides concrete database implementations of the
+// domain port interfaces using PostgreSQL via pgx.
+package repository
+
+import (
+	"context"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"haberbot/internal/domain/entity"
+	"haberbot/internal/domain/valueobject"
+)
+
+// PostgresArticleRepo implements port.ArticleRepository using PostgreSQL.
+type PostgresArticleRepo struct {
+	pool *pgxpool.Pool
+}
+
+// NewPostgresArticleRepo creates a new PostgresArticleRepo backed by the given
+// connection pool.
+func NewPostgresArticleRepo(pool *pgxpool.Pool) *PostgresArticleRepo {
+	return &PostgresArticleRepo{pool: pool}
+}
+
+// Save persists an article. If the article has an ID, it performs an upsert;
+// otherwise it inserts a new record with a generated UUID.
+func (r *PostgresArticleRepo) Save(ctx context.Context, article *entity.Article) error {
+	query := `
+		INSERT INTO articles (id, title, turkish_title, original_url, source_type,
+			original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+			processed_at, fetched_at, created_at)
+		VALUES (COALESCE(NULLIF($1, ''), gen_random_uuid()::text),
+			$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+		ON CONFLICT (id) DO UPDATE SET
+			turkish_title = EXCLUDED.turkish_title,
+			turkish_content = EXCLUDED.turkish_content,
+			turkish_summary = EXCLUDED.turkish_summary,
+			processed_at = EXCLUDED.processed_at,
+			score = EXCLUDED.score
+		RETURNING id, created_at`
+
+	article.Title = strings.ToValidUTF8(article.Title, "")
+	article.TurkishTitle = strings.ToValidUTF8(article.TurkishTitle, "")
+	article.OriginalContent = strings.ToValidUTF8(article.OriginalContent, "")
+	article.TurkishContent = strings.ToValidUTF8(article.TurkishContent, "")
+	article.TurkishSummary = strings.ToValidUTF8(article.TurkishSummary, "")
+
+	now := time.Now()
+	if article.FetchedAt.IsZero() {
+		article.FetchedAt = now
+	}
+
+	return r.pool.QueryRow(ctx, query,
+		article.ID, article.Title, article.TurkishTitle, article.OriginalURL,
+		article.SourceType.String(), article.OriginalContent, article.TurkishContent, article.TurkishSummary,
+		article.Score, article.TopicID, article.ImageURL, article.ProcessedAt,
+		article.FetchedAt, now,
+	).Scan(&article.ID, &article.CreatedAt)
+}
+
+// FindByID retrieves a single article by its unique identifier.
+func (r *PostgresArticleRepo) FindByID(ctx context.Context, id string) (*entity.Article, error) {
+	query := `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles WHERE id = $1`
+
+	article, err := r.scanArticle(r.pool.QueryRow(ctx, query, id))
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	}
+	return article, err
+}
+
+// FindByTopicID retrieves paginated articles for a given topic.
+func (r *PostgresArticleRepo) FindByTopicID(ctx context.Context, topicID string, limit, offset int) ([]*entity.Article, error) {
+	query := `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles
+		WHERE topic_id = $1
+		ORDER BY fetched_at DESC
+		LIMIT $2 OFFSET $3`
+
+	return r.queryArticles(ctx, query, topicID, limit, offset)
+}
+
+// FindRecent retrieves the most recently fetched processed articles.
+func (r *PostgresArticleRepo) FindRecent(ctx context.Context, limit int) ([]*entity.Article, error) {
+	query := `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles
+		ORDER BY fetched_at DESC
+		LIMIT $1`
+
+	return r.queryArticles(ctx, query, limit)
+}
+
+// FindUnprocessed retrieves articles that have not been processed by AI yet.
+func (r *PostgresArticleRepo) FindUnprocessed(ctx context.Context, limit int) ([]*entity.Article, error) {
+	query := `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles
+		WHERE processed_at IS NULL
+		ORDER BY fetched_at ASC
+		LIMIT $1`
+
+	return r.queryArticles(ctx, query, limit)
+}
+
+// ExistsByURL checks whether an article with the given URL already exists.
+func (r *PostgresArticleRepo) ExistsByURL(ctx context.Context, url string) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS(SELECT 1 FROM articles WHERE original_url = $1)`
+	err := r.pool.QueryRow(ctx, query, url).Scan(&exists)
+	return exists, err
+}
+
+// CountByTopicID returns the total number of processed articles for a topic.
+func (r *PostgresArticleRepo) CountByTopicID(ctx context.Context, topicID string) (int, error) {
+	var count int
+	query := `SELECT COUNT(*) FROM articles WHERE topic_id = $1`
+	err := r.pool.QueryRow(ctx, query, topicID).Scan(&count)
+	return count, err
+}
+
+// Search searches for articles matching the query in Turkish title or summary.
+// If source is not empty, filters by source type as well.
+func (r *PostgresArticleRepo) Search(ctx context.Context, query string, source valueobject.SourceType, limit, offset int) ([]*entity.Article, error) {
+	var queryStr string
+	var args []interface{}
+	
+	if source == "" {
+		// Search only by query in Turkish title and summary
+		searchTerm := "%" + query + "%"
+		queryStr = `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles
+			WHERE (title ILIKE $1 OR turkish_title ILIKE $1 OR turkish_summary ILIKE $1 OR original_content ILIKE $1)
+			ORDER BY fetched_at DESC
+			LIMIT $2 OFFSET $3
+		`
+		args = []interface{}{searchTerm, limit, offset}
+	} else {
+		// Search by query and filter by source
+		searchTerm := "%" + query + "%"
+		queryStr = `
+			SELECT id, title, turkish_title, original_url, source_type,
+				original_content, turkish_content, turkish_summary, score, topic_id, image_url,
+				processed_at, fetched_at, created_at
+			FROM articles
+			WHERE (title ILIKE $1 OR turkish_title ILIKE $1 OR turkish_summary ILIKE $1 OR original_content ILIKE $1)
+			AND source_type = $2
+			ORDER BY fetched_at DESC
+			LIMIT $3 OFFSET $4
+		`
+		args = []interface{}{searchTerm, source.String(), limit, offset}
+	}
+
+	return r.queryArticles(ctx, queryStr, args...)
+}
+
+// queryArticles executes a query and returns a slice of articles.
+func (r *PostgresArticleRepo) queryArticles(ctx context.Context, query string, args ...any) ([]*entity.Article, error) {
+	rows, err := r.pool.Query(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("querying articles: %w", err)
+	}
+	defer rows.Close()
+
+	var articles []*entity.Article
+	for rows.Next() {
+		article, err := r.scanArticleFromRows(rows)
+		if err != nil {
+			return nil, fmt.Errorf("scanning article row: %w", err)
+		}
+		articles = append(articles, article)
+	}
+
+	return articles, rows.Err()
+}
+
+// scanArticle scans a single article from a pgx.Row.
+func (r *PostgresArticleRepo) scanArticle(row pgx.Row) (*entity.Article, error) {
+	var article entity.Article
+	var sourceType string
+
+	err := row.Scan(
+		&article.ID, &article.Title, &article.TurkishTitle, &article.OriginalURL,
+		&sourceType, &article.OriginalContent, &article.TurkishContent, &article.TurkishSummary,
+		&article.Score, &article.TopicID, &article.ImageURL,
+		&article.ProcessedAt, &article.FetchedAt, &article.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	article.SourceType = valueobject.SourceType(sourceType)
+	return &article, nil
+}
+
+// scanArticleFromRows scans a single article from pgx.Rows.
+func (r *PostgresArticleRepo) scanArticleFromRows(rows pgx.Rows) (*entity.Article, error) {
+	var article entity.Article
+	var sourceType string
+
+	err := rows.Scan(
+		&article.ID, &article.Title, &article.TurkishTitle, &article.OriginalURL,
+		&sourceType, &article.OriginalContent, &article.TurkishContent, &article.TurkishSummary,
+		&article.Score, &article.TopicID, &article.ImageURL,
+		&article.ProcessedAt, &article.FetchedAt, &article.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	article.SourceType = valueobject.SourceType(sourceType)
+	return &article, nil
+}

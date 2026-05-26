@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HaberBot Admin - Topics Management</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#131318",
+                      "on-primary-container": "#340080",
+                      "error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#004395",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-background": "#e4e1e9",
+                      "tertiary": "#4cd7f6",
+                      "on-secondary": "#002e6a",
+                      "secondary-fixed": "#d8e2ff",
+                      "surface-bright": "#39383e",
+                      "inverse-on-surface": "#303036",
+                      "on-tertiary-fixed": "#001f26",
+                      "surface-container": "#1f1f25",
+                      "surface-container-highest": "#35343a",
+                      "secondary": "#adc6ff",
+                      "on-surface": "#e4e1e9",
+                      "primary-fixed": "#e9ddff",
+                      "inverse-surface": "#e4e1e9",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "outline-variant": "#494454",
+                      "on-error": "#690005",
+                      "on-secondary-container": "#e6ecff",
+                      "background": "#131318",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "on-tertiary": "#003640",
+                      "primary": "#d0bcff",
+                      "inverse-primary": "#6d3bd7",
+                      "on-surface-variant": "#cbc3d7",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-container": "#002f38",
+                      "on-secondary-fixed": "#001a42",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#1b1b20",
+                      "surface": "#131318",
+                      "tertiary-fixed": "#acedff",
+                      "on-primary-fixed": "#23005c",
+                      "on-primary-fixed-variant": "#5516be",
+                      "on-primary": "#3c0091",
+                      "surface-container-lowest": "#0e0e13",
+                      "primary-container": "#a078ff",
+                      "primary-fixed-dim": "#d0bcff",
+                      "surface-container-high": "#2a292f",
+                      "tertiary-container": "#009eb9",
+                      "outline": "#958ea0",
+                      "surface-tint": "#d0bcff",
+                      "secondary-container": "#0566d9",
+                      "surface-variant": "#35343a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "glass-padding": "24px",
+                      "base": "8px",
+                      "section-gap": "40px",
+                      "gutter": "20px",
+                      "container-padding": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Outfit"],
+                      "headline-lg": ["Outfit"],
+                      "headline-md": ["Outfit"],
+                      "body-lg": ["Outfit"],
+                      "label-md": ["Outfit"],
+                      "label-sm": ["Outfit"],
+                      "headline-lg-mobile": ["Outfit"],
+                      "display-lg": ["Outfit"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0F;
+            color: #e4e1e9;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        .gradient-button {
+            background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-button:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+            transform: translateY(-1px);
+        }
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #4cd7f6;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 215, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(76, 215, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 215, 246, 0); }
+        }
+        .progress-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            from { background-position: -200% 0; }
+            to { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low/30 backdrop-blur-xl border-r border-outline-variant/10 z-50 flex flex-col p-glass-padding transition-all duration-300 ease-in-out">
+<div class="mb-10 flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-primary">HaberBot Admin</span>
+<span class="text-label-sm text-on-surface-variant/60 uppercase tracking-widest mt-1">AI Command Center</span>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Active: Topics -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container/20 text-primary rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="topic" style="font-variation-settings: 'FILL' 1;">topic</span>
+<span class="font-label-md text-label-md">Topics</span>
+</a>
+<!-- Inactive: Settings -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="HaberBot Logo" class="w-full h-full object-cover" data-alt="A professional avatar portrait of a modern AI systems administrator with clean, minimalist features and subtle purple lighting accents in a dark studio setting. The image should look like a high-end corporate headshot for a future-tech company." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-xGWMQJCu4M6owGofjp3Jj_FAQzt1aDLzY_culGHdszaRMf7HCBnRjUABf0jcCJVm7vJ_horVkMbKYMiUswKlyiyGgL5jnQFFAkMZ85OhoMSgNBTi_IP2yXxlr8coNgO0kiz-lhHsQwg28c8EfDuz94GKGQKL6xWl2S20DhEkNWjQtNE5Mh-XrcddLv0aru0eu0zHj_7SLhUwcgRj0ClZopN6_zumbqE1Q7ftAEy53xvONG_t6sDvlPEeIpbAmhOh23iEi2RsmfAd"/>
+</div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-on-surface">Admin User</span>
+<span class="text-[10px] text-on-surface-variant uppercase">Super Admin</span>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface-dim/20 backdrop-blur-md border-b border-outline-variant/10 flex justify-between items-center px-container-padding h-16">
+<div class="flex items-center gap-4 flex-grow max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-surface-container-lowest/50 border border-outline-variant/30 rounded-full py-1.5 pl-10 pr-4 text-label-md focus:outline-none focus:border-primary/50 transition-colors" placeholder="Search topics, logs, or bots..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-white/10 rounded-full transition-colors scale-95 active:scale-90 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-full transition-colors scale-95 active:scale-90 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 px-container-padding pb-container-padding">
+<!-- Header & Action Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2 tracking-tight">Topics Management</h1>
+<p class="text-body-lg text-on-surface-variant max-w-2xl">Configure and monitor the core interest areas of your AI news aggregation engine.</p>
+</div>
+<button class="pill-shaped px-8 py-3 font-label-md text-label-md font-bold text-white gradient-button rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                Add New Topic
+            </button>
+</div>
+<!-- System Controls Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-section-gap">
+<div class="md:col-span-2 glass-card p-glass-padding">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">System Controls</h2>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-highest/50 rounded-full">
+<span class="status-pulse"></span>
+<span class="text-label-sm text-tertiary">System Live</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-4">
+<button class="gradient-button px-10 py-4 rounded-full font-label-md text-label-md font-bold text-white flex items-center gap-3 shadow-lg">
+<span class="material-symbols-outlined">rss_feed</span>
+                        Fetch News
+                    </button>
+<button class="gradient-button px-10 py-4 rounded-full font-label-md text-label-md font-bold text-white flex items-center gap-3 shadow-lg">
+<span class="material-symbols-outlined">psychology</span>
+                        Process AI
+                    </button>
+</div>
+<div class="mt-8">
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-sm text-on-surface-variant">AI Processing Progress</span>
+<span class="text-label-sm text-primary">68%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden relative">
+<div class="h-full bg-primary w-[68%] rounded-full relative">
+<div class="absolute inset-0 progress-shimmer"></div>
+</div>
+</div>
+<div class="flex justify-between mt-3 text-[12px] text-on-surface-variant/60">
+<span>Analysis: Large Language Models Trends</span>
+<span>Last run: 5 minutes ago</span>
+</div>
+</div>
+</div>
+<!-- Quick Stats / Status Card -->
+<div class="glass-card p-glass-padding flex flex-col justify-between">
+<div>
+<h3 class="text-label-md font-bold text-on-surface-variant mb-4 uppercase tracking-widest">Health Monitor</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-body-md text-on-surface-variant">Active Topics</span>
+<span class="font-headline-md text-headline-md text-on-surface">12</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-md text-on-surface-variant">Daily Articles</span>
+<span class="font-headline-md text-headline-md text-on-surface">1.2k</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/10">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span class="text-label-sm">Next scheduled fetch in 12m</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Topics Table Section -->
+<div class="glass-card overflow-hidden">
+<div class="px-glass-padding py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Active Topics</h2>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-white/5 rounded-lg border border-outline-variant/10 text-on-surface-variant">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 hover:bg-white/5 rounded-lg border border-outline-variant/10 text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-label-sm text-on-surface-variant/70 uppercase tracking-widest border-b border-outline-variant/10 bg-white/2">
+<th class="px-glass-padding py-4 font-bold">Title</th>
+<th class="px-glass-padding py-4 font-bold">Slug</th>
+<th class="px-glass-padding py-4 font-bold">Source</th>
+<th class="px-glass-padding py-4 font-bold">Status</th>
+<th class="px-glass-padding py-4 font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- Row 1: AI -->
+<tr class="hover:bg-white/2 transition-colors group">
+<td class="px-glass-padding py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<span class="text-body-md font-bold text-on-surface">Artificial Intelligence</span>
+</div>
+</td>
+<td class="px-glass-padding py-5">
+<code class="text-label-sm bg-surface-container-highest px-2 py-1 rounded text-tertiary">ai-news</code>
+</td>
+<td class="px-glass-padding py-5 text-on-surface-variant">Multi-Source API</td>
+<td class="px-glass-padding py-5">
+<span class="flex items-center gap-2 text-label-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                    Active
+                                </span>
+</td>
+<td class="px-glass-padding py-5 text-right">
+<button class="p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Technology -->
+<tr class="hover:bg-white/2 transition-colors group">
+<td class="px-glass-padding py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="devices">devices</span>
+</div>
+<span class="text-body-md font-bold text-on-surface">Technology</span>
+</div>
+</td>
+<td class="px-glass-padding py-5">
+<code class="text-label-sm bg-surface-container-highest px-2 py-1 rounded text-tertiary">tech-trends</code>
+</td>
+<td class="px-glass-padding py-5 text-on-surface-variant">Global RSS Hub</td>
+<td class="px-glass-padding py-5">
+<span class="flex items-center gap-2 text-label-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                    Active
+                                </span>
+</td>
+<td class="px-glass-padding py-5 text-right">
+<button class="p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Cybersecurity -->
+<tr class="hover:bg-white/2 transition-colors group">
+<td class="px-glass-padding py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-tertiary-container/10 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+</div>
+<span class="text-body-md font-bold text-on-surface">Cybersecurity</span>
+</div>
+</td>
+<td class="px-glass-padding py-5">
+<code class="text-label-sm bg-surface-container-highest px-2 py-1 rounded text-tertiary">cyber-sec</code>
+</td>
+<td class="px-glass-padding py-5 text-on-surface-variant">Threat Intelligence Feed</td>
+<td class="px-glass-padding py-5">
+<span class="flex items-center gap-2 text-label-sm text-on-surface-variant/40">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant/40"></span>
+                                    Paused
+                                </span>
+</td>
+<td class="px-glass-padding py-5 text-right">
+<button class="p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-glass-padding py-4 border-t border-outline-variant/10 flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant">Showing 3 of 12 topics</span>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-highest/30 rounded-lg text-label-sm text-on-surface-variant hover:bg-white/10 transition-colors">Previous</button>
+<button class="px-4 py-2 bg-surface-container-highest/30 rounded-lg text-label-sm text-on-surface-variant hover:bg-white/10 transition-colors">Next</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple interactivity for demonstration
+        document.querySelectorAll('.gradient-button').forEach(btn => {
+            btn.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            btn.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simulating Progress Bar update
+        let progress = 68;
+        const progressBar = document.querySelector('.bg-primary.relative');
+        const progressText = document.querySelector('.text-primary');
+
+        setInterval(() => {
+            if(progress < 100) {
+                progress += Math.random() * 0.5;
+                if(progress > 100) progress = 0;
+                progressBar.style.width = progress + '%';
+                progressText.innerText = Math.floor(progress) + '%';
+            }
+        }, 3000);
+    </script>
+</body></html>

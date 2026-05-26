@@ -1,0 +1,177 @@
+/* ====================================================
+   ArticleCard — Terminal Monolith Design System (Stitch)
+   No glassmorphism. No blur. Opaque surfaces only.
+   ==================================================== */
+
+.article-card {
+  background: #0A0A0A;
+  border: 1px solid #222222;
+  border-radius: 0.25rem;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.article-card:hover {
+  border-color: #444444;
+}
+
+/* ---- Wide / Featured card (index === 3) ---- */
+.article-card--wide {
+  grid-column: span 2;
+}
+
+.article-card--wide .article-card__inner {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+/* ---- Image (only for wide card) ---- */
+.article-card__image-wrap {
+  width: 33.333%;
+  min-height: 192px;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.article-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.article-card:hover .article-card__image {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* ---- Content wrapper ---- */
+.article-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* ---- Header meta line ---- */
+.article-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.article-card__badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8e9192;
+  background: #111111;
+  border: 1px solid #222222;
+  padding: 4px 8px;
+  border-radius: 0.125rem;
+}
+
+.article-card__date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: #8e9192;
+}
+
+/* ---- Title ---- */
+.article-card__title {
+  font-family: 'Geist', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+/* Wide card gets larger headline */
+.article-card--wide .article-card__title {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* ---- Summary ---- */
+.article-card__summary {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #c4c7c8;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- Footer / Tags ---- */
+.article-card__footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #111111;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.article-card__tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+/* ---- Stagger animation delays ---- */
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.20s; }
+.stagger-6 { animation-delay: 0.24s; }
+
+/* ---- Responsive: mobile collapse ---- */
+@media (max-width: 1023px) {
+  .article-card--wide {
+    grid-column: span 1;
+  }
+  .article-card--wide .article-card__inner {
+    flex-direction: column;
+  }
+  .article-card__image-wrap {
+    width: 100%;
+    height: 192px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

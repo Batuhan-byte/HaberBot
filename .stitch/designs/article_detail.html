@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HaberBot | Haber Detayı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#e5e2e1",
+                        "secondary-container": "#464747",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-bright": "#3a3939",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#c4c7c8",
+                        "on-secondary": "#303031",
+                        "on-tertiary": "#2f3131",
+                        "on-tertiary-container": "#636565",
+                        "on-secondary-fixed-variant": "#464747",
+                        "error-container": "#93000a",
+                        "secondary": "#c7c6c6",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "tertiary-container": "#e2e2e2",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "background": "#131313",
+                        "outline-variant": "#444748",
+                        "inverse-surface": "#e5e2e1",
+                        "surface": "#131313",
+                        "on-primary-fixed": "#1a1c1c",
+                        "on-secondary-container": "#b5b5b5",
+                        "on-surface": "#e5e2e1",
+                        "inverse-primary": "#5d5f5f",
+                        "surface-variant": "#353534",
+                        "primary": "#ffffff",
+                        "outline": "#8e9192",
+                        "inverse-on-surface": "#313030",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#353534",
+                        "on-primary": "#2f3131",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "primary-container": "#e2e2e2",
+                        "surface-tint": "#c6c6c7",
+                        "surface-dim": "#131313",
+                        "on-primary-container": "#636565",
+                        "surface-container": "#201f1f",
+                        "primary-fixed-dim": "#c6c6c7",
+                        "tertiary-fixed": "#e2e2e2",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#454747",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "secondary-fixed": "#e3e2e2",
+                        "surface-container-low": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "max-width": "1280px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Geist"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-md": ["13px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e5e2e1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .news-content p {
+            margin-bottom: 24px;
+        }
+        /* Custom scrollbar for minimalist feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #222222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444444; }
+    </style>
+</head>
+<body class="bg-background">
+<!-- TopNavBar -->
+<nav class="w-full top-0 sticky z-50 bg-background dark:bg-background border-b border-outline-variant dark:border-outline-variant flat no shadows">
+<div class="flex justify-between items-center h-16 px-margin-desktop max-w-max-width mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-headline-md font-headline-md text-primary tracking-tighter">HaberBot</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container-low transition-colors duration-150 active:scale-95 duration-100 font-body-md text-body-md" href="#">Discover</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-2 font-body-md text-body-md" href="#">Feed</a>
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container-low transition-colors duration-150 active:scale-95 duration-100 font-body-md text-body-md" href="#">Sources</a>
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container-low transition-colors duration-150 active:scale-95 duration-100 font-body-md text-body-md" href="#">Analytics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md font-label-md w-48 text-on-surface" placeholder="Haberlerde ara..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlAea_kzK0lCU9wdt0qaxI8ZjqQSQudtdSoKIzWJ2RCmw1yyh5Gc7Kz6f3hBx3oHyJrj-gtMjCLHDG4eQNLZP9ZINBCl3E_ygKEx2mnhsSxxnZ8BdrQN8i5q-4rWG_83ZETpu_YHJyIrsnQT8jtPxX7kOL_8EsnnqIEOanUokCqnlSxRnoQPdpqoem1kyKbPnIit7t545jd64J53yU_PxxUPxZlC3rIZW5t0lcyXoSYTHDn8KIZLO6x-XfNlNAGauB_D3OphXAOqQ"/>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="max-w-max-width mx-auto px-margin-desktop py-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Article Content Area -->
+<article class="lg:col-span-8">
+<!-- Metadata -->
+<header class="mb-10">
+<div class="flex items-center gap-3 mb-6">
+<span class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant font-label-sm text-label-sm rounded uppercase tracking-wider text-primary">Teknoloji</span>
+<span class="text-on-surface-variant font-label-md text-label-md">12 Dakika Önce</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-6 leading-tight">
+                        Kuantum Bilişimde Devrim: Oda Sıcaklığında Kararlı Kalan Yeni Bir İşlemci Mimarisi Tanıtıldı
+                    </h1>
+<div class="flex items-center justify-between border-y border-outline-variant py-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">memory</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary">TechAnalyst Global</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Yayıncı: HaberBot AI Aggregator</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant hover:border-white transition-colors rounded">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+<button class="p-2 border border-outline-variant hover:border-white transition-colors rounded">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Hero Image -->
+<div class="mb-10 aspect-[16/9] bg-surface-container-low rounded overflow-hidden border border-outline-variant relative group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A macro photograph of a futuristic quantum computing chip with intricate glowing circuits and crystalline structures. The lighting is cold and atmospheric, with deep blacks and neon blue and white highlights reflecting off polished metallic surfaces. The overall aesthetic is ultra-clean, technical, and high-performance, fitting a minimalist dark-mode developer interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQB8km829UVtIIQio03WgS4dbW149sTK-NuA_xk0zDAokpH2Xl-a-veVtcDW3QVy3OSmFLoGq_cTktE56hIiyS5pvMvy5ct-Xysb5IXjpgEHvEdojfKwEtTeIiGyAe94-lP-jRL7w0kU2SLzbr7NhLOGsc5KRxXfao-OrvELzvt-xaBaJRNqTruQVDyfN6mVBt-f3nQOJ5sVosZZP7iNOWQX8l_WIAVObm8Ve-tC-pTxI4eaEKDLGQTJa6UcUSZG4_ni7Jv894gIY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- AI Summary Content -->
+<section class="news-content">
+<div class="flex items-center gap-2 mb-6 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-primary scale-75" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span>YAPAY ZEKA ÖZETİ</span>
+</div>
+<div class="font-body-lg text-body-lg leading-[1.8] text-on-surface space-y-6">
+<p class="font-semibold text-white">
+                            Bugün yayınlanan bilimsel raporlara göre, kuantum hesaplama dünyasında bugüne kadar karşılaşılan en büyük engellerden biri olan "soğutma gereksinimi" aşılmış olabilir. Yeni mimari, standart silikon tabanlı sistemlerle entegre çalışabiliyor.
+                        </p>
+<p>
+                            Geleneksel kuantum işlemcileri, kübitlerin kararlılığını korumak için mutlak sıfıra yakın sıcaklıklara ihtiyaç duyarken, bu yeni teknoloji özel bir fotonik kafes yapısı kullanarak oda sıcaklığında bile veri kaybını (decoherence) %99 oranında engelliyor. Bu durum, kuantum bilgisayarların sadece devasa laboratuvarlarda değil, standart veri merkezlerinde de barınabileceği anlamına geliyor.
+                        </p>
+<div class="p-6 bg-surface-container-lowest border-l-2 border-primary my-8">
+<h4 class="font-label-md text-label-md text-primary mb-2 uppercase tracking-widest">Önemli Çıkarım</h4>
+<p class="italic text-on-surface-variant font-body-md mb-0">
+                                "Bu buluş, kriptografi ve ilaç geliştirme simülasyonları gibi yüksek işlem gücü gerektiren alanlarda maliyetleri %80 oranında düşürebilir."
+                            </p>
+</div>
+<p>
+                            Mühendisler, geliştirilen yeni "Quantum-Nexus" biriminin mevcut bulut altyapılarına entegre edilmesinin yaklaşık 18 ay süreceğini öngörüyor. İlk test aşamasında, sistemin karmaşık protein katlanma problemlerini saniyeler içinde çözdüğü gözlemlendi. Bu hız, günümüzün en güçlü süper bilgisayarlarından yaklaşık 10.000 kat daha fazla.
+                        </p>
+<p>
+                            HaberBot analistleri, bu gelişmenin teknoloji hisselerinde yeni bir ralliyi tetikleyebileceğini ve yarı iletken pazarında köklü bir değişim başlatabileceğini belirtiyor. Henüz ticari kullanım için bir tarih verilmese de, büyük teknoloji devlerinin şimdiden patent lisansları için sıraya girdiği konuşuluyor.
+                        </p>
+</div>
+</section>
+<!-- Tags -->
+<div class="mt-12 pt-8 border-t border-outline-variant flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm rounded text-on-surface-variant hover:text-white cursor-pointer transition-colors">#QUANTUM</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm rounded text-on-surface-variant hover:text-white cursor-pointer transition-colors">#FUTURETECH</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm rounded text-on-surface-variant hover:text-white cursor-pointer transition-colors">#COMPUTING</span>
+</div>
+</article>
+<!-- Sidebar -->
+<aside class="lg:col-span-4 space-y-8">
+<!-- Action Card -->
+<div class="bg-surface-container-low border border-outline-variant p-6 rounded">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-4">Kaynak</h3>
+<a class="inline-flex items-center justify-between w-full bg-primary text-on-primary px-4 py-3 rounded font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all" href="#">
+<span>Kaynağa Git</span>
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</a>
+<div class="mt-4 flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">link</span>
+<span class="truncate">https://techglobal.com/quantum-breakthrough</span>
+</div>
+</div>
+<!-- Similar News -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Benzer Haberler</h3>
+<!-- News Card 1 -->
+<div class="group flex gap-4 cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface-container rounded overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A close-up shot of a silicon wafer motherboard with glowing gold circuits and green microchips. The lighting is professional studio-style, emphasizing the technical precision of the hardware. The color palette is composed of dark grays, muted greens, and sharp metallic highlights, maintaining a professional and high-tech minimalist feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDu7EGlDIDgqW0xQFvASE6D1EjFDnllo1MkHZyEu3uVBLa_Qd0BztKBRHxswkcQjdUPE3b0v-sqjkY7rXDo9MQFUSPo0UVPXnLtfahf-WGphgPj3UoSgR-OA3OBQywiy-ymL3JrWe5ToUVCteRH4FGv9uqUfkW0F_cYfu91J-d865PKAtIXPNnRp4VZd7d2njfqXR3sBpi5NyZJa-sqz6393F1K-8nuXHUPB7BcGot1GiLkglDfI0x8rgxqcUYEm64bxK24wrb6bw"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1">DÜNYA • 4S</span>
+<h4 class="font-body-md text-body-md text-primary leading-snug group-hover:underline decoration-outline-variant underline-offset-4">
+                                Yeni Nesil Yarı İletkenler İçin Tedarik Zinciri Genişliyor
+                            </h4>
+</div>
+</div>
+<!-- News Card 2 -->
+<div class="group flex gap-4 cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface-container rounded overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A futuristic cybersecurity visual with abstract digital data streams and locks glowing in white against a deep black background. The style is ultra-minimalist and technical, using thin sharp lines and high contrast to represent advanced encryption. The mood is secure and sophisticated, aligning with a developer-focused dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4gdpKX6i19wmDvT1Ji1jKXNk2VOw86vWh_8c-HRp-uXWJbekACCZFXnnxUIvJzfsJZuyUDvw75b4SJQqAbdd-M8ab9WLGfKnb-JBiwA0ryXprmRXItOoLidYRZtI-9IOE5Fd1JhPvmcNhS3jWhOUaKpOh_lJgKORUDrPOtrgLbTY3EO-Xqve1WQIqMTV5fmRyJZKMxhhfocdGXg7RPszvTVF5nAi2bQlCOhLwcjzKK5TYOHU0zrjwmqzJJ-SUnmtDPRi0kYpKbrI"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1">GÜVENLİK • 8S</span>
+<h4 class="font-body-md text-body-md text-primary leading-snug group-hover:underline decoration-outline-variant underline-offset-4">
+                                Kuantum Sonrası Şifreleme: Güvenli Mi?
+                            </h4>
+</div>
+</div>
+<!-- News Card 3 -->
+<div class="group flex gap-4 cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface-container rounded overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A minimalist tech setup with a sleek laptop reflecting glowing blue interface elements on its screen, set in a dark environment. The lighting focuses on the screen and keyboard, creating a high-contrast aesthetic. The color scheme is deep blacks and bright silvers, emphasizing professional reliability and modern focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjY8vcnb4LkKDUl6uqiD_jZXnQVTxNytiOUa9sryXSZWPO_jyliMqh2M1MgGUmdUUBvDkgb_XIS9dAziOMTPfdI6z0cmxIUgXWsZJW2CwjQHMCDzxDwZIpBW__QZepWc-cEGvEr7-yd7oEVSmYCk7IrinerJ6lwM-pd2GeoiZ3exviVXvE92SxdgJVnfX5GNBr_hOYcb3S6G_aByi2p_tfc4fUGjVcjThEHNvFyHZjXfNT1C1I9BAKfwxd3k9gyqTOmA3Ol0MAq2o"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1">YAZILIM • 1G</span>
+<h4 class="font-body-md text-body-md text-primary leading-snug group-hover:underline decoration-outline-variant underline-offset-4">
+                                Geliştiriciler İçin Kuantum SDK'ları Yayınlandı
+                            </h4>
+</div>
+</div>
+<button class="w-full py-2 border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high transition-colors mt-4">
+                        Daha Fazla Göster
+                    </button>
+</div>
+<!-- Newsletter Mini -->
+<div class="bg-surface-container-highest border border-outline-variant p-6 rounded relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-[64px]">mail</span>
+</div>
+<h3 class="font-label-md text-label-md text-primary mb-2">Haftalık Bülten</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">En önemli teknoloji haberleri e-postana gelsin.</p>
+<input class="w-full bg-background border-outline-variant focus:border-white text-label-md p-2 mb-3 rounded" placeholder="E-posta adresi" type="email"/>
+<button class="w-full bg-secondary text-on-secondary font-label-md text-label-md py-2 rounded hover:bg-white transition-colors">Abone Ol</button>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 bg-background dark:bg-background border-t border-outline-variant dark:border-outline-variant flat no shadows">
+<div class="max-w-max-width mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-2">
+<span class="font-headline-md text-headline-md text-primary">HaberBot</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-surface-variant">© 2024 HaberBot AI. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-on-surface-variant hover:text-primary underline transition-all font-label-sm text-label-sm" href="#">Terms</a>
+<a class="text-on-surface-variant hover:text-primary underline transition-all font-label-sm text-label-sm" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary underline transition-all font-label-sm text-label-sm" href="#">API Docs</a>
+<a class="text-on-surface-variant hover:text-primary underline transition-all font-label-sm text-label-sm" href="#">Status</a>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 border border-outline-variant flex items-center justify-center rounded hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined scale-75">terminal</span>
+</button>
+<button class="w-10 h-10 border border-outline-variant flex items-center justify-center rounded hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined scale-75">rss_feed</span>
+</button>
+</div>
+</div>
+</footer>
+<script>
+        // Simple progress bar for reading
+        const progressBar = document.createElement('div');
+        progressBar.style.position = 'fixed';
+        progressBar.style.top = '0';
+        progressBar.style.left = '0';
+        progressBar.style.height = '2px';
+        progressBar.style.backgroundColor = '#ffffff';
+        progressBar.style.zIndex = '100';
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width 0.1s ease';
+        document.body.appendChild(progressBar);
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + '%';
+        });
+
+        // Click interaction for micro-effects
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.96)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>
