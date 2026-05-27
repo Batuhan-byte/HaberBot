@@ -16,13 +16,15 @@
 }
 
 .webtekno-nav {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 64px;
+  box-sizing: border-box;
 }
 
 /* Logo */
@@ -31,7 +33,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -1.5px;
-  color: #ffffff;
+  color: #ef4444; /* Brand Red */
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -40,8 +42,8 @@
 }
 
 .webtekno-logo span {
-  color: #3b82f6; /* Electric Blue Accent */
-  text-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  color: #ef4444; /* Brand Red */
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
 /* Horizontal Menu Items */
