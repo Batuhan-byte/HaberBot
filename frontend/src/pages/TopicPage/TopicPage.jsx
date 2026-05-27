@@ -104,7 +104,7 @@ export default function TopicPage() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-600 selection:text-white">
-      {/* ========== WEBTEKNO NAVIGATION BAR ========== */}
+      {/* ========== HABERBOT NAVIGATION BAR ========== */}
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedTopic={topicName} />
 
       {/* ========== POPULER HASH-TAG BAR ========== */}
@@ -255,7 +255,7 @@ export default function TopicPage() {
         )}
       </main>
 
-      {/* ========== WEBTEKNO SITEMAP FOOTER ========== */}
+      {/* ========== HABERBOT SITEMAP FOOTER ========== */}
       <footer className="sitemap-footer" aria-label="Sayfa Alt Bilgisi">
         <div className="sitemap-container">
           <div className="sitemap-grid">

@@ -117,10 +117,10 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
 
   return (
     <>
-      <header className="webtekno-header" ref={headerRef}>
-        <nav className="webtekno-nav" aria-label="Ana Navigasyon">
+      <header className="hb-header" ref={headerRef}>
+        <nav className="hb-nav" aria-label="Ana Navigasyon">
           <div className="flex items-center gap-4 h-full">
-            <Link to="/" className="webtekno-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
+            <Link to="/" className="hb-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
               Haber<span>Bot</span>
             </Link>
             
@@ -146,7 +146,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
 
           <div className="nav-controls">
             {/* Search Box */}
-            <div className="webtekno-search">
+            <div className="hb-search">
               <span className="material-symbols-outlined text-[16px] text-gray-500 cursor-pointer" onClick={handleSearchSubmit}>search</span>
               <input 
                 placeholder="Haberlerde ara..." 
@@ -173,6 +173,17 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                 <>
                   <button className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Bildirimler">notifications</button>
                   <Link to="/admin" className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Admin">settings</Link>
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('admin_api_key');
+                      setIsLoggedIn(false);
+                      navigate('/');
+                    }}
+                    className="material-symbols-outlined text-gray-400 p-2 hover:bg-red-950/20 hover:text-red-500 rounded-full text-[20px] hidden md:inline-block" 
+                    title="Çıkış Yap"
+                  >
+                    logout
+                  </button>
                   <Link to="/admin" className="h-8 w-8 rounded-full border border-gray-800 overflow-hidden flex items-center justify-center ml-1" title="Yönetici Paneli">
                     <img 
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
@@ -206,7 +217,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
         </nav>
 
         {/* ========== RED UNDERLINE ACCENT BORDER ========== */}
-        <div className="webtekno-bottom-accent"></div>
+        <div className="hb-bottom-accent"></div>
 
         {/* ========== MOBILE MENU DRAWER ========== */}
         <div className={`mobile-nav-drawer lg:hidden ${isMobileMenuOpen ? 'is-open' : ''}`}>
@@ -236,7 +247,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
         </div>
 
         {/* ========== DESKTOP SLIDING MEGA DROPDOWN PANEL ========== */}
-        <div className={`webtekno-dropdown-panel ${activeDropdownSlug ? 'is-open' : ''}`}>
+        <div className={`hb-dropdown-panel ${activeDropdownSlug ? 'is-open' : ''}`}>
           <div className="dropdown-panel-container">
             <div className="dropdown-header">
               <div className="flex items-center gap-2">
@@ -348,7 +359,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
       {/* ========== SLIDING LEFT SIDE HAMBURGER DRAWER ========== */}
       <div className={`drawer-overlay ${isLeftDrawerOpen ? 'is-visible' : ''}`} onClick={() => setIsLeftDrawerOpen(false)}></div>
       
-      <div className={`webtekno-left-drawer ${isLeftDrawerOpen ? 'is-open' : ''}`}>
+      <div className={`hb-left-drawer ${isLeftDrawerOpen ? 'is-open' : ''}`}>
         {/* User Account / Close Button Bar */}
         <div className="left-drawer-header">
           <Link to="/login" className="drawer-user-info" onClick={() => setIsLeftDrawerOpen(false)}>

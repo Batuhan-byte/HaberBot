@@ -3,7 +3,7 @@
    Midnight Neon Theme
    ========================================================================== */
 
-.webtekno-header {
+.hb-header {
   background-color: rgba(0, 0, 0, 0.9);
   border-bottom: 1px solid #222222;
   position: sticky;
@@ -15,7 +15,7 @@
   width: 100%;
 }
 
-.webtekno-nav {
+.hb-nav {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -28,7 +28,7 @@
 }
 
 /* Logo */
-.webtekno-logo {
+.hb-logo {
   font-family: 'Syne', 'Outfit', sans-serif;
   font-size: 1.75rem;
   font-weight: 800;
@@ -41,7 +41,7 @@
   user-select: none;
 }
 
-.webtekno-logo span {
+.hb-logo span {
   color: #2563eb; /* Premium Blue for Bot */
   text-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
 }
@@ -103,7 +103,7 @@
   gap: 12px;
 }
 
-.webtekno-search {
+.hb-search {
   display: flex;
   align-items: center;
   background-color: #0d0d0d;
@@ -116,14 +116,14 @@
   box-sizing: border-box;
 }
 
-.webtekno-search:focus-within {
+.hb-search:focus-within {
   border-color: #3b82f6;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
   background-color: #111111;
   width: 180px; /* Dynamic expansion */
 }
 
-.webtekno-search input {
+.hb-search input {
   background: transparent;
   border: none;
   outline: none;
@@ -133,7 +133,7 @@
   padding: 0 4px;
 }
 
-.webtekno-search input::placeholder {
+.hb-search input::placeholder {
   color: #555555;
 }
 
@@ -144,10 +144,10 @@
     font-size: 0.72rem;
     margin: 0 1px;
   }
-  .webtekno-search {
+  .hb-search {
     width: 90px;
   }
-  .webtekno-search:focus-within {
+  .hb-search:focus-within {
     width: 140px;
   }
 }
@@ -247,7 +247,7 @@
 /* ==========================================================================
    Desktop Mega Dropdown Sliding Panel
    ========================================================================== */
-.webtekno-dropdown-panel {
+.hb-dropdown-panel {
   position: absolute;
   top: 64px;
   left: 0;
@@ -265,7 +265,7 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
 }
 
-.webtekno-dropdown-panel.is-open {
+.hb-dropdown-panel.is-open {
   max-height: 560px;
   opacity: 1;
   pointer-events: auto;
@@ -586,7 +586,7 @@
    ========================================================================== */
 
 /* Hamburger Button */
-.webtekno-hamburger-btn {
+.hb-hamburger-btn {
   background: transparent;
   border: none;
   color: #a1a1aa;
@@ -599,17 +599,17 @@
   border-radius: 50%;
 }
 
-.webtekno-hamburger-btn:hover {
+.hb-hamburger-btn:hover {
   color: #ffffff;
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.webtekno-hamburger-btn:active {
+.hb-hamburger-btn:active {
   transform: scale(0.92);
 }
 
 /* Blue Bottom Accent Bar running under header */
-.webtekno-bottom-accent {
+.hb-bottom-accent {
   height: 3px;
   width: 100%;
   background-color: #2563eb;
@@ -639,7 +639,7 @@
 }
 
 /* Left sliding drawer panel */
-.webtekno-left-drawer {
+.hb-left-drawer {
   position: fixed;
   top: 0;
   left: 0;
@@ -658,20 +658,20 @@
 }
 
 /* Custom Scrollbar for Drawer */
-.webtekno-left-drawer::-webkit-scrollbar {
+.hb-left-drawer::-webkit-scrollbar {
   width: 4px;
 }
 
-.webtekno-left-drawer::-webkit-scrollbar-track {
+.hb-left-drawer::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.webtekno-left-drawer::-webkit-scrollbar-thumb {
+.hb-left-drawer::-webkit-scrollbar-thumb {
   background: #222222;
   border-radius: 4px;
 }
 
-.webtekno-left-drawer.is-open {
+.hb-left-drawer.is-open {
   transform: translateX(0);
 }
 

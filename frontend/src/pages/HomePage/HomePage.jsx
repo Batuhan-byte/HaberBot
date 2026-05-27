@@ -140,7 +140,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-600 selection:text-white">
-      {/* ========== WEBTEKNO NAVIGATION BAR ========== */}
+      {/* ========== HABERBOT NAVIGATION BAR ========== */}
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedTopic="Tümü" />
 
       {/* ========== POPULER HASH-TAG BAR ========== */}
@@ -153,7 +153,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ========== WEBTEKNO UPPER 3-COLUMN HERO GRID (REKAMLAR ELENDİ) ========== */}
+      {/* ========== HABERBOT UPPER 3-COLUMN HERO GRID (REKAMLAR ELENDİ) ========== */}
       <section className="HaberBot-hero-grid" aria-label="Manşet Haberler">
         {/* Sol Sütun: Sıcak Fırsatlar */}
         <div className="firsat-box">
@@ -345,7 +345,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ========== WEBTEKNO SITEMAP FOOTER ========== */}
+      {/* ========== HABERBOT SITEMAP FOOTER ========== */}
       <footer className="sitemap-footer" aria-label="Sayfa Alt Bilgisi">
         <div className="sitemap-container">
           <div className="sitemap-grid">
