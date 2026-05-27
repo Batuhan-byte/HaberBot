@@ -936,3 +936,10 @@
 .modern-login-btn:active {
   transform: scale(0.95);
 }
+
+/* Hide mobile menu toggle button on desktop screens */
+@media (min-width: 1024px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}
