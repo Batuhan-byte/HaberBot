@@ -351,7 +351,7 @@ export default function HomePage() {
           <div className="sitemap-grid">
             <div className="sitemap-brand-col">
               <span className="sitemap-brand-logo">
-                haber<span>bota</span>
+                Haber<span>Bot</span>
               </span>
               <p className="sitemap-brand-desc">
                 Türkiye'nin en popüler teknoloji haber ve inceleme platformu. HaberBot AI altyapısıyla çalışır.
