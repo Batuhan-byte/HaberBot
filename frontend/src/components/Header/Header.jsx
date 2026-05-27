@@ -120,6 +120,15 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
       <header className="hb-header" ref={headerRef}>
         <nav className="hb-nav" aria-label="Ana Navigasyon">
           <div className="flex items-center gap-4 h-full">
+            {/* Hamburger Menu Icon */}
+            <button 
+              className="hb-hamburger-btn" 
+              onClick={() => setIsLeftDrawerOpen(true)}
+              aria-label="Sol Hamburger Menüyü Aç"
+            >
+              <span className="material-symbols-outlined text-[22px]">menu</span>
+            </button>
+            
             <Link to="/" className="hb-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
               Haber<span>Bot</span>
             </Link>
