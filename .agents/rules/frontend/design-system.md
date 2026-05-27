@@ -4,7 +4,7 @@ glob: frontend/src/**/*.{js,jsx,css}
 description: HaberBot Tasarım Sistemi Kuralları. Renk paleti, kırmızı yasağı, cam efekti (glassmorphism), Outfit/Inter yazı tipleri ve mikro-animasyon CSS kod şablonları.
 ---
 
-# 🎨 HaberBot Tasarım Sistemi & Estetik Kuralları (frontend-design-system.md)
+# 🎨 HaberBot Tasarım Sistemi & Estetik Kuralları (rules/frontend/design-system.md)
 
 Bu kural dosyası, HaberBot'un benzersiz, üst düzey ve modern koyu tema estetiğini korumak amacıyla tasarlanmıştır. Görsel veya stil bazlı bir çalışma (CSS, JSX sınıf düzenlemeleri, yeni arayüz bileşenleri oluşturma) yaparken bu dosyadaki şablonları ve kuralları birebir uygulamalısınız.
 

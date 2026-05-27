@@ -4,7 +4,7 @@ glob: frontend/src/**/*.{js,jsx,css}
 description: HaberBot Zengin HTML İçerik Render ve CSS Formatlama Kuralları. RSS kaynaklarından gelen ham HTML verilerinin güvenli render edilmesi ve .news-content editorial CSS şablonları.
 ---
 
-# ✍️ Zengin HTML İçerik ve Makale Görünümü (frontend-content.md)
+# ✍️ Zengin HTML İçerik ve Makale Görünümü (rules/frontend/content.md)
 
 HaberBot, farklı RSS kaynaklarından (HackerNews, Webtekno vb.) gelen ve içerisinde ham HTML etiketleri barındıran haber metinlerini işler. Bu metinlerin okuyucuya **editorial (dergi/gazete kalitesinde)**, son derece şık ve temiz bir tipografiyle sunulması gerekir. Bu kural dosyası, zengin içeriklerin render edilmesi ve CSS formatlama kurallarını tanımlar.
 

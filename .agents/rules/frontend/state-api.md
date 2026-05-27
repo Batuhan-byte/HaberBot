@@ -4,7 +4,7 @@ glob: frontend/src/**/*.{js,jsx}
 description: HaberBot Durum Yönetimi, API ve B-Planı Entegrasyon Kuralları. TanStack React Query custom hooks, Promise.all paralel fetch ve Gemini API dayanıklılık fallbacks şablonları.
 ---
 
-# 💾 HaberBot Durum Yönetimi, API & B-Planı Kuralları (frontend-state-api.md)
+# 💾 HaberBot Durum Yönetimi, API & B-Planı Kuralları (rules/frontend/state-api.md)
 
 Bu dosya, HaberBot uygulamasının ağ iletişimi, veri önbelleğe alma ve üçüncü taraf yapay zeka (Google Gemini) kotalarına bağlı hata senaryolarını yönetme standartlarını tanımlar. Custom hook yazarken, veri çekerken veya hata durumlarını ele alırken bu şablonlara sıkı sıkıya bağlı kalmalısınız.
 

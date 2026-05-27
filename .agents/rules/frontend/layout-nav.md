@@ -4,7 +4,7 @@ glob: frontend/src/**/*.{js,jsx,css}
 description: HaberBot Sayfa Düzeni, Navigasyon ve Drawer Kuralları. Full-width akışkan navbar yerleşimi ve z-index stacking context hatalarını engelleyen fixed drawer konumlandırma kuralları.
 ---
 
-# 📐 HaberBot Yerleşim, Navigasyon & Drawer Güvenliği (frontend-layout-nav.md)
+# 📐 HaberBot Yerleşim, Navigasyon & Drawer Güvenliği (rules/frontend/layout-nav.md)
 
 Bu dosya, HaberBot arayüzünün genel yerleşim (layout) yapısını, responsive ızgaralarını ve kayan yan menü (sliding drawer), karartma (overlay) ve modal gibi `position: fixed` elemanların CSS yerleşim kurallarını tanımlar. Yerleşim şablonları oluştururken veya navigasyon elemanlarını kodlarken bu kurallara kesinlikle uymalısınız.
 

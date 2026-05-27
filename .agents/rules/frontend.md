@@ -17,19 +17,19 @@ Geliştirme yaparken, üzerinde çalıştığınız konuya ait en detaylı kural
 Çalıştığınız dosyaya veya konuya göre aşağıdaki bağlantılara giderek o alana özel detaylı kuralları okuyun:
 
 1. **Görsel tasarım, renk paleti, cam efekti, Outfit/Inter yazı tipleri veya hover animasyonları yazarken/düzenlerken:**
-   👉 [Tasarım Sistemi & Estetik Kuralları (frontend-design-system.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend-design-system.md)
+   👉 [Tasarım Sistemi & Estetik Kuralları (frontend/design-system.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend/design-system.md)
    
 2. **TanStack React Query custom hooks yazarken, veri çekme mantığı kurgularken veya Gemini API kotaları için dayanıklılık (resilience) fallbacks uygularken:**
-   👉 [Durum Yönetimi, API & B-Planı Kuralları (frontend-state-api.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend-state-api.md)
+   👉 [Durum Yönetimi, API & B-Planı Kuralları (frontend/state-api.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend/state-api.md)
 
 3. **Geniş akışkan navbar (Header), responsive ızgaralar (grid) tasarlarken veya fixed sidebar drawer yerleşimleri (stacking context sorunları) yaparken:**
-   👉 [Navigasyon & Yerleşim Kuralları (frontend-layout-nav.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend-layout-nav.md)
+   👉 [Navigasyon & Yerleşim Kuralları (frontend/layout-nav.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend/layout-nav.md)
 
 4. **RSS feed veya makalelerden gelen ham HTML verilerini temiz ve premium bir şekilde (`dangerouslySetInnerHTML`) render ederken veya okuma CSS stilleri yazarken:**
-   👉 [Zengin HTML İçerik Okuma Kuralları (frontend-content.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend-content.md)
+   👉 [Zengin HTML İçerik Okuma Kuralları (frontend/content.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend/content.md)
 
 5. **Form elemanları, login girdileri, premium skeleton loader'lar, boş durumlar veya Admin paneli RSS kaynağı ekleme/çıkarma kontrolleri yazarken:**
-   👉 [Etkileşim, Formlar & Admin Kuralları (frontend-interactive-admin.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend-interactive-admin.md)
+   👉 [Etkileşim, Formlar & Admin Kuralları (frontend/interactive-admin.md)](file:///c:/Users/Batuhan/Desktop/deneme%20projem/.agents/rules/frontend/interactive-admin.md)
 
 ---
 

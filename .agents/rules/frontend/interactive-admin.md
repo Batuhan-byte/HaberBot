@@ -1,10 +1,10 @@
 ---
 trigger: on_change
 glob: frontend/src/**/*.{js,jsx}
-description: HaberBot Etkileşimli Arayüz Elemanları, Formlar ve Admin Paneli Kuralları. Input focus neon mavi glow efektleri, buton scale-feedback geri bildirimleri, skeleton loader ve empty state şablonları.
+description: HaberBot Etkileşimli Arayüz Elemanları, Formlar ve Admin Paneli Kuralları. Input focus neon mavi glow efektleri, buton scale-feedback active durum animasyonu, skeleton loader ve empty state şablonları.
 ---
 
-# 🎯 Etkileşim, Formlar & Admin Kuralları (frontend-interactive-admin.md)
+# 🎯 Etkileşim, Formlar & Admin Kuralları (rules/frontend/interactive-admin.md)
 
 Bu dosya; HaberBot uygulamasındaki kullanıcı etkileşimlerini, form girdi elemanlarını (giriş sayfaları, kaynak ekleme alanları), skeleton loader yükleme ekranlarını, boş/hata durum tasarımlarını ve Admin Dashboard kontrollerini yöneten kuralları ve kod şablonlarını barındırır. Etkileşimli bir UI elemanı tasarlarken bu standartlara uymalısınız.
 
