@@ -22,11 +22,35 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const [activeDropdownSlug, setActiveDropdownSlug] = useState(null);
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
     const adminKey = localStorage.getItem('admin_api_key');
     setIsLoggedIn(!!adminKey);
   }, [location.pathname]);
+
+  // Load and apply theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    if (nextTheme === 'light') {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
+  };
 
   // Synchronize local search state with search query prop
   useEffect(() => {
@@ -50,12 +74,13 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
 
   const drawerArticles = drawerArticlesData?.articles || [];
 
-  // Handle outside clicks to close the dropdown panel and mobile menu
+  // Handle outside clicks to close the dropdown panel, mobile menu and search wrapper
   useEffect(() => {
     function handleClickOutside(event) {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setActiveDropdownSlug(null);
         setIsMobileMenuOpen(false);
+        setIsSearchOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -154,36 +179,53 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
           </div>
 
           <div className="nav-controls">
-            {/* Search Box */}
-            <div className="hb-search">
-              <span className="material-symbols-outlined text-[16px] text-gray-500 cursor-pointer" onClick={handleSearchSubmit}>search</span>
-              <input 
-                placeholder="Haberlerde ara..." 
-                type="text"
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                onKeyDown={handleSearchSubmit}
-              />
-              {localSearch && (
-                <button 
-                  onClick={() => {
-                    setLocalSearch('');
-                    if (setSearchQuery) setSearchQuery('');
-                  }}
-                  className="material-symbols-outlined text-gray-500 hover:text-white text-[14px] ml-1"
-                >
-                  close
-                </button>
-              )}
+            {/* Animasyonlu Arama Kutusu */}
+            <div className={`hb-search-wrapper ${isSearchOpen ? 'is-open' : ''}`}>
+              <button 
+                className="hb-search-trigger-btn"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                aria-label="Arama Yap"
+              >
+                <span className="material-symbols-outlined">search</span>
+              </button>
+              <div className="hb-search-input-container">
+                <input 
+                  placeholder="Haberlerde ara..." 
+                  type="text"
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  onKeyDown={handleSearchSubmit}
+                />
+                {localSearch && (
+                  <button 
+                    onClick={() => {
+                      setLocalSearch('');
+                      if (setSearchQuery) setSearchQuery('');
+                    }}
+                    className="material-symbols-outlined text-gray-500 hover:text-white text-[14px] ml-1"
+                  >
+                    close
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className="hb-controls-wrap">
+            {/* Nav Actions Group */}
+            <div className="hb-nav-actions">
+              {/* Favorilerim Butonu */}
+              <button className="hb-action-icon-btn" aria-label="Favorilerim" title="Favorilerim">
+                <span className="material-symbols-outlined">bookmarks</span>
+              </button>
+
+              {/* Gazete Butonu */}
+              <button className="hb-action-icon-btn" aria-label="Haberler" title="Haberler">
+                <span className="material-symbols-outlined">newspaper</span>
+              </button>
+
+              {/* Üye Girişi / Profil Yönetimi */}
               {isLoggedIn ? (
-                <>
-                  <button className="hb-control-btn" aria-label="Bildirimler">
-                    <span className="material-symbols-outlined">notifications</span>
-                  </button>
-                  <Link to="/admin" className="hb-control-btn" aria-label="Admin" title="Yönetici Ayarları">
+                <div className="flex items-center gap-1">
+                  <Link to="/admin" className="hb-action-icon-btn" aria-label="Admin" title="Yönetici Ayarları">
                     <span className="material-symbols-outlined">settings</span>
                   </Link>
                   <button 
@@ -192,7 +234,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                       setIsLoggedIn(false);
                       navigate('/');
                     }}
-                    className="hb-control-btn btn-logout" 
+                    className="hb-action-icon-btn btn-logout" 
                     title="Çıkış Yap"
                   >
                     <span className="material-symbols-outlined">logout</span>
@@ -203,13 +245,27 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                       alt="Profil" 
                     />
                   </Link>
-                </>
+                </div>
               ) : (
-                <Link to="/login" className="modern-login-btn">
-                  <span className="material-symbols-outlined">account_circle</span>
-                  <span>Giriş Yap</span>
+                <Link to="/login" className="hb-premium-login-btn">
+                  <span className="material-symbols-outlined">person</span>
+                  <span>ÜYE GİRİŞİ</span>
                 </Link>
               )}
+
+              {/* Koyu/Açık Mod Switcher Toggle */}
+              <button 
+                className={`hb-theme-toggle ${theme === 'light' ? 'is-light' : ''}`}
+                onClick={toggleTheme}
+                aria-label="Tema Değiştir"
+                title={theme === 'dark' ? "Açık Moda Geç" : "Koyu Moda Geç"}
+              >
+                <div className="hb-theme-toggle-thumb">
+                  <span className="material-symbols-outlined">
+                    {theme === 'dark' ? 'dark_mode' : 'light_mode'}
+                  </span>
+                </div>
+              </button>
             </div>
             
             {/* Mobile Hamburger Toggle */}
