@@ -323,7 +323,7 @@ export default function TopicPage() {
           </div>
 
           <div className="text-center text-[0.7rem] text-gray-600 mt-6">
-            © 2026 HaberBot AI & HaberBota Redesign. Tüm hakları saklıdır.
+            © 2026 HaberBot AI & HaberBot Redesign. Tüm hakları saklıdır.
           </div>
         </div>
       </footer>
