@@ -18,6 +18,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const headerRef = useRef(null);
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
   const [activeDropdownSlug, setActiveDropdownSlug] = useState(null);
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
@@ -61,7 +62,20 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   useEffect(() => {
     setActiveDropdownSlug(null);
     setIsMobileMenuOpen(false);
+    setIsLeftDrawerOpen(false);
   }, [location.pathname]);
+
+  // Disable page scroll when side drawer is open
+  useEffect(() => {
+    if (isLeftDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isLeftDrawerOpen]);
 
   const handleTopicClick = (e, topic) => {
     // If desktop view: toggle mega drawer
@@ -98,7 +112,16 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   return (
     <header className="webtekno-header" ref={headerRef}>
       <nav className="webtekno-nav" aria-label="Ana Navigasyon">
-        <div className="flex items-center gap-6 h-full">
+        <div className="flex items-center gap-4 h-full">
+          {/* Hamburger Menu Icon */}
+          <button 
+            className="webtekno-hamburger-btn" 
+            onClick={() => setIsLeftDrawerOpen(true)}
+            aria-label="Sol Hamburger Menüyü Aç"
+          >
+            <span className="material-symbols-outlined text-[22px]">menu</span>
+          </button>
+          
           <Link to="/" className="webtekno-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
             web<span>tekno</span>
           </Link>
@@ -182,6 +205,9 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
           </div>
         </div>
       </nav>
+
+      {/* ========== RED UNDERLINE ACCENT BORDER ========== */}
+      <div className="webtekno-bottom-accent"></div>
 
       {/* ========== MOBILE MENU DRAWER ========== */}
       <div className={`mobile-nav-drawer lg:hidden ${isMobileMenuOpen ? 'is-open' : ''}`}>
@@ -316,6 +342,127 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
               <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* ========== SLIDING LEFT SIDE HAMBURGER DRAWER ========== */}
+      <div className={`drawer-overlay ${isLeftDrawerOpen ? 'is-visible' : ''}`} onClick={() => setIsLeftDrawerOpen(false)}></div>
+      
+      <div className={`webtekno-left-drawer ${isLeftDrawerOpen ? 'is-open' : ''}`}>
+        {/* User Account / Close Button Bar */}
+        <div className="left-drawer-header">
+          <Link to="/login" className="drawer-user-info" onClick={() => setIsLeftDrawerOpen(false)}>
+            <div className="drawer-user-avatar">
+              <span className="material-symbols-outlined text-[20px]">person</span>
+            </div>
+            <div className="drawer-user-text flex flex-col">
+              <span className="drawer-username">Giriş Yap / Üye Ol</span>
+            </div>
+          </Link>
+          <button 
+            className="drawer-close-btn" 
+            onClick={() => setIsLeftDrawerOpen(false)}
+            aria-label="Menüyü Kapat"
+          >
+            <span className="material-symbols-outlined text-[22px]">close</span>
+          </button>
+        </div>
+
+        {/* Navigation Core Menu */}
+        <div className="left-drawer-menu">
+          <Link to="/" className="drawer-menu-item" onClick={() => setIsLeftDrawerOpen(false)}>
+            <span className="material-symbols-outlined">power_settings_new</span>
+            <span>Anasayfa</span>
+          </Link>
+          <Link to="/" className="drawer-menu-item" onClick={() => setIsLeftDrawerOpen(false)}>
+            <span className="material-symbols-outlined">newspaper</span>
+            <span>Haber</span>
+          </Link>
+          <a href="#" className="drawer-menu-item" onClick={(e) => { e.preventDefault(); setIsLeftDrawerOpen(false); }}>
+            <span className="material-symbols-outlined">play_circle</span>
+            <span>Video</span>
+          </a>
+          <a href="#" className="drawer-menu-item" onClick={(e) => { e.preventDefault(); setIsLeftDrawerOpen(false); }}>
+            <span className="material-symbols-outlined">bookmarks</span>
+            <span>Favorilerim</span>
+          </a>
+          <div className="drawer-menu-item dropdown-toggle">
+            <span className="material-symbols-outlined">bar_chart</span>
+            <span>En Çok Okunanlar</span>
+            <span className="material-symbols-outlined ml-auto text-[14px]">keyboard_arrow_down</span>
+          </div>
+          <div className="drawer-menu-item dropdown-toggle">
+            <span className="material-symbols-outlined">trending_up</span>
+            <span>En Çok Paylaşılanlar</span>
+            <span className="material-symbols-outlined ml-auto text-[14px]">keyboard_arrow_down</span>
+          </div>
+          <div className="drawer-menu-item dropdown-toggle">
+            <span className="material-symbols-outlined">smart_display</span>
+            <span>En Çok İzlenenler</span>
+            <span className="material-symbols-outlined ml-auto text-[14px]">keyboard_arrow_down</span>
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div className="left-drawer-section">
+          <h4 className="section-title">Kategoriler</h4>
+          <div className="drawer-categories-list">
+            <Link to="/" className="category-link" onClick={() => setIsLeftDrawerOpen(false)}>Tümü</Link>
+            {topics.map(topic => (
+              <Link 
+                key={topic.id} 
+                to={`/kategori/${topic.slug}`} 
+                className="category-link"
+                onClick={() => setIsLeftDrawerOpen(false)}
+              >
+                {topic.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Social Media Link Icons */}
+        <div className="left-drawer-socials">
+          <a href="#" className="social-icon text-[#3b5998]" aria-label="Facebook">
+            <span className="material-symbols-outlined text-[20px]">public</span>
+          </a>
+          <a href="#" className="social-icon text-[#ffffff]" aria-label="Twitter">
+            <span className="material-symbols-outlined text-[20px]">terminal</span>
+          </a>
+          <a href="#" className="social-icon text-[#c13584]" aria-label="Instagram">
+            <span className="material-symbols-outlined text-[20px]">photo_camera</span>
+          </a>
+          <a href="#" className="social-icon text-[#0088cc]" aria-label="Telegram">
+            <span className="material-symbols-outlined text-[20px]">send</span>
+          </a>
+          <a href="#" className="social-icon text-[#ff0000]" aria-label="YouTube">
+            <span className="material-symbols-outlined text-[20px]">smart_display</span>
+          </a>
+        </div>
+
+        {/* Secondary Corporate Links */}
+        <div className="left-drawer-corporate">
+          <a href="#" className="corporate-link">Hakkımızda</a>
+          <a href="#" className="corporate-link">Yazarlar</a>
+          <a href="#" className="corporate-link">Ödüllerimiz</a>
+          <a href="#" className="corporate-link">Künye</a>
+          <a href="#" className="corporate-link">Gizlilik</a>
+          <a href="#" className="corporate-link">İletişim</a>
+        </div>
+
+        {/* Mediazone Branding */}
+        <div className="left-drawer-branding">
+          <span>Bir <span>mediazone</span> markasıdır.</span>
+        </div>
+
+        {/* Partner Logos Grid at the bottom */}
+        <div className="left-drawer-partners">
+          <span className="partner-logo">mackolik</span>
+          <span className="partner-logo match-direct">MATCH EN DIRECT</span>
+          <span className="partner-logo">mynet</span>
+          <span className="partner-logo">onedio</span>
+          <span className="partner-logo">webtekno</span>
+          <span className="partner-logo">Yemek.com</span>
         </div>
       </div>
     </header>
