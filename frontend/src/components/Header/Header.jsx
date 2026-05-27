@@ -21,6 +21,12 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
   const [activeDropdownSlug, setActiveDropdownSlug] = useState(null);
   const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const adminKey = localStorage.getItem('admin_api_key');
+    setIsLoggedIn(!!adminKey);
+  }, [location.pathname]);
 
   // Synchronize local search state with search query prop
   useEffect(() => {
@@ -114,15 +120,6 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
       <header className="webtekno-header" ref={headerRef}>
         <nav className="webtekno-nav" aria-label="Ana Navigasyon">
           <div className="flex items-center gap-4 h-full">
-            {/* Hamburger Menu Icon */}
-            <button 
-              className="webtekno-hamburger-btn" 
-              onClick={() => setIsLeftDrawerOpen(true)}
-              aria-label="Sol Hamburger Menüyü Aç"
-            >
-              <span className="material-symbols-outlined text-[22px]">menu</span>
-            </button>
-            
             <Link to="/" className="webtekno-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
               Haber<span>Bot</span>
             </Link>
@@ -171,16 +168,25 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
               )}
             </div>
 
-            <div className="flex items-center gap-1">
-              <button className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Bildirimler">notifications</button>
-              <Link to="/admin" className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Admin">settings</Link>
-              <Link to="/login" className="h-8 w-8 rounded-full border border-gray-800 overflow-hidden flex items-center justify-center ml-1">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                  alt="Profil" 
-                  className="object-cover w-full h-full" 
-                />
-              </Link>
+            <div className="flex items-center gap-2">
+              {isLoggedIn ? (
+                <>
+                  <button className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Bildirimler">notifications</button>
+                  <Link to="/admin" className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Admin">settings</Link>
+                  <Link to="/admin" className="h-8 w-8 rounded-full border border-gray-800 overflow-hidden flex items-center justify-center ml-1" title="Yönetici Paneli">
+                    <img 
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                      alt="Profil" 
+                      className="object-cover w-full h-full" 
+                    />
+                  </Link>
+                </>
+              ) : (
+                <Link to="/login" className="modern-login-btn">
+                  <span className="material-symbols-outlined">account_circle</span>
+                  <span>Giriş Yap</span>
+                </Link>
+              )}
               
               {/* Mobile Hamburger Toggle */}
               <button 

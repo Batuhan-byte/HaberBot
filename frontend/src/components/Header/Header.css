@@ -901,3 +901,38 @@
   font-weight: 900;
   letter-spacing: 0.5px;
 }
+
+/* Modern Login Button */
+.modern-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #3b82f6;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.02);
+  cursor: pointer;
+}
+
+.modern-login-btn .material-symbols-outlined {
+  font-size: 18px !important;
+}
+
+.modern-login-btn:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+.modern-login-btn:active {
+  transform: scale(0.95);
+}
