@@ -1,104 +1,7 @@
 /* ==========================================================================
-   HaberBot Redesign - Webtekno Visual Hierarchy
+   HaberBot Redesign - HaberBota Visual Hierarchy
    Midnight Neon Color Palette
    ========================================================================== */
-
-/* Top Category Navigation & Menus */
-.webtekno-header {
-  background-color: #000000;
-  border-bottom: 1px solid #222222;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(12px);
-}
-
-.webtekno-nav {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-}
-
-.webtekno-logo {
-  font-family: 'Syne', 'Outfit', sans-serif;
-  font-size: 1.75rem;
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  color: #ffffff;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.webtekno-logo span {
-  color: #3b82f6; /* Electric Blue Accent */
-}
-
-.webtekno-menu {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  height: 100%;
-}
-
-.menu-item {
-  color: #9ca3af;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 8px 4px;
-  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  border-bottom: 2px solid transparent;
-}
-
-.menu-item:hover, .menu-item.active {
-  color: #ffffff;
-}
-
-.menu-item.active {
-  border-color: #3b82f6;
-}
-
-/* User controls & Search */
-.nav-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.webtekno-search {
-  display: flex;
-  align-items: center;
-  background-color: #0d0d0d;
-  border: 1px solid #222222;
-  border-radius: 20px;
-  padding: 4px 12px;
-  height: 36px;
-  transition: border-color 0.2s ease;
-}
-
-.webtekno-search:focus-within {
-  border-color: #3b82f6;
-}
-
-.webtekno-search input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #ffffff;
-  font-size: 0.8rem;
-  width: 140px;
-  padding: 0 4px;
-}
-
-.webtekno-search input::placeholder {
-  color: #444444;
-}
 
 /* Popüler İçerikler & Hashtags */
 .populer-bar {
@@ -143,9 +46,9 @@
 }
 
 /* ==========================================================================
-   Hero Grid Layout (Webtekno Upper 3-Column)
+   Hero Grid Layout (HaberBota Upper 3-Column)
    ========================================================================== */
-.webtekno-hero-grid {
+.HaberBot-hero-grid {
   display: grid;
   grid-template-columns: 280px 1fr 280px;
   gap: 16px;
@@ -430,7 +333,7 @@
 /* ==========================================================================
    Two-Column Main Content & Sidebar
    ========================================================================== */
-.webtekno-main-layout {
+.HaberBot-main-layout {
   max-width: 1200px;
   margin: 0 auto 48px auto;
   padding: 0 16px;
@@ -531,7 +434,7 @@
 }
 
 /* Sağ Sütun: Trend Sidebar */
-.webtekno-sidebar {
+.HaberBot-sidebar {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -885,13 +788,13 @@
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 1024px) {
-  .webtekno-hero-grid {
+  .HaberBot-hero-grid {
     grid-template-columns: 1fr;
   }
   .firsat-box, .vurgu-card {
     height: auto;
   }
-  .webtekno-main-layout {
+  .HaberBot-main-layout {
     grid-template-columns: 1fr;
   }
   .sitemap-grid {
@@ -900,7 +803,7 @@
 }
 
 @media (max-width: 768px) {
-  .webtekno-menu {
+  .HaberBot-menu {
     display: none; /* Hide categories in mobile navigation for simple flow */
   }
   .row-card {

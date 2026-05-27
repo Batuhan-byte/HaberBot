@@ -15,7 +15,7 @@
 ### 2. Kahraman (Hero) Izgarası & Reklamsız Üst Alan (Hero Grid)
 
 - [ ] **GRID-01:** Webtekno'daki üst boş reklam baneri alanı tamamen iptal edilmelidir; "Popüler İçerikler" etiketlerinin hemen altında doğrudan ana haber ızgarası başlamalıdır.
-- [ ] **GRID-02:** Sol Sütun ("Sıcak Fırsatlar & İndirimler"): Mor arka planlı, dikey bir kart bulunmalıdır. İçerisinde editoryal fırsat listeleri, indirim kuponları ve "webtekno30" tarzı indirim kodları listelenmelidir.
+- [ ] **GRID-02:** Sol Sütun ("Sıcak Fırsatlar & İndirimler"): Mor arka planlı, dikey bir kart bulunmalıdır. İçerisinde editoryal fırsat listeleri, indirim kuponları ve "haberbota30" tarzı indirim kodları listelenmelidir.
 - [ ] **GRID-03:** Orta Sütun (Büyük Manşet Kartı): En güncel veya en yüksek puanlı (score) haberin büyük manşet resmi, görsel üzerine bindirilmiş başlığı ve yeşil-neon renkli "NASIL DEĞİŞTİRİLİR?" veya benzeri dikkat çekici alt başlığı yer almalıdır.
 - [ ] **GRID-04:** Sağ Sütun (Vurgulu Başlık Kartı): Kırmızı (`#ef4444`) veya projenin mavi tonlu arka planına sahip, düz renkli ve üzerinde sadece beyaz renkli çarpıcı başlık ve kısa açıklama barındıran vurgu haber kartı yer almalıdır.
 

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomePage from './pages/HomePage/HomePage';
 import ArticlePage from './pages/ArticlePage/ArticlePage';
+import TopicPage from './pages/TopicPage/TopicPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AdminDashboard from './pages/AdminPage/AdminDashboard';
 import AdminSources from './pages/AdminPage/AdminSources';
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/kategori/:slug" element={<TopicPage />} />
           <Route path="/haber/:id" element={<ArticlePage />} />
           <Route path="/login" element={<LoginPage />} />
           

@@ -1,105 +1,251 @@
-.topic-page {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+/* ==========================================================================
+   HaberBot Redesign - HaberBota Category Page
+   Midnight Neon Theme
+   ========================================================================== */
+
+/* Category Title Styling */
+.category-title-container {
+  border-bottom: 2px solid #ef4444; /* HaberBota red separator bar */
+  padding-bottom: 12px;
+  margin-top: 16px;
 }
 
-.topic-header {
-  text-align: center;
-  padding: 40px 24px;
-  border-radius: var(--radius-lg);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-card);
-}
-
-.topic-title {
-  font-size: 2.5rem;
+.category-page-title {
+  font-size: 1.5rem;
   font-weight: 800;
-  margin-bottom: 16px;
+  color: #ffffff;
+  text-transform: uppercase;
   letter-spacing: -0.5px;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #a5b4fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.topic-keywords {
   display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Red vertical block indicator */
+.category-page-title span {
+  display: inline-block;
+  width: 8px;
+  height: 24px;
+  background-color: #ef4444;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Haftanın Özeti Panel (AI Summary)
+   ========================================================================== */
+.haftanin-ozeti-panel {
+  background: linear-gradient(135deg, #0d0d0d 0%, #050409 100%);
+  border: 1px solid #222222;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.ozet-icon-wrap {
+  background-color: rgba(255, 121, 198, 0.08);
+  border: 1px solid rgba(255, 121, 198, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(255, 121, 198, 0.15);
 }
 
-.keyword-pill {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  padding: 4px 12px;
-  border-radius: 100px;
+.ozet-content {
+  flex: 1;
+}
+
+.ozet-badge {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #ff79c6; /* Neon Pink AI color */
+  background-color: rgba(255, 121, 198, 0.12);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.ozet-text {
+  color: #e5e7eb;
   font-size: 0.85rem;
+  line-height: 1.6;
   font-weight: 500;
-  transition: all var(--transition);
 }
 
-.keyword-pill:hover {
-  border-color: var(--accent-primary);
-  color: var(--text-primary);
-}
-
-.articles-grid {
+/* ==========================================================================
+   Category Hero Grid (1-Wide Left, 2x2 Grid Right)
+   ========================================================================== */
+.category-hero-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  height: 380px;
 }
 
-.no-articles {
-  text-align: center;
-  padding: 60px 24px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  max-width: 480px;
-  margin: 40px auto;
+/* Sol Sütun: Büyük Manşet */
+.cat-manset-card {
+  position: relative;
+  background-color: #0d0d0d;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  text-decoration: none;
 }
 
-.no-articles-icon {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: 16px;
+.cat-manset-image-wrap {
+  position: absolute;
+  inset: 0;
 }
 
-.no-articles h3 {
-  font-size: 1.25rem;
+.cat-manset-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cat-manset-card:hover .cat-manset-image {
+  transform: scale(1.03);
+}
+
+.cat-manset-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.95) 100%);
+  z-index: 1;
+}
+
+.cat-manset-body {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
+  width: 100%;
+}
+
+.cat-manset-badge {
+  background-color: #ef4444;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
   margin-bottom: 8px;
 }
 
-.no-articles p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.cat-manset-title {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
 }
 
-.pagination-wrapper {
+/* Sağ Sütun: 2x2 Grid */
+.cat-grid-side {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: 100%;
+}
+
+.cat-sub-card {
+  background-color: #0d0d0d;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  overflow: hidden;
   display: flex;
-  justify-content: center;
-  margin-top: 48px;
+  flex-direction: column;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
 }
 
-@media (max-width: 1024px) {
-  .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
+.cat-sub-card:hover {
+  border-color: #444444;
+}
+
+.cat-sub-image-wrap {
+  height: 110px;
+  background-color: #111111;
+  overflow: hidden;
+}
+
+.cat-sub-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cat-sub-card:hover .cat-sub-image {
+  transform: scale(1.03);
+}
+
+.cat-sub-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.cat-sub-badge {
+  font-size: 0.65rem;
+  color: #3b82f6;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cat-sub-title {
+  color: #e5e7eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cat-sub-card:hover .cat-sub-title {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 992px) {
+  .category-hero-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .cat-manset-card {
+    height: 280px;
+  }
+  .cat-grid-side {
+    height: auto;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .topic-title {
-    font-size: 2rem;
+  .haftanin-ozeti-panel {
+    flex-direction: column;
+    gap: 12px;
   }
-  .articles-grid {
+  .cat-grid-side {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../services/api';
+import Header from '../../components/Header/Header';
 
 function ArticlePageSkeleton() {
   return (
@@ -51,11 +52,7 @@ export default function ArticlePage() {
   if (isLoading) {
     return (
       <>
-        <header className="w-full top-0 sticky bg-[#050505] border-b border-white/5 z-50">
-          <nav className="flex justify-between items-center h-16 px-margin-desktop max-w-max-width mx-auto">
-            <span className="text-white font-extrabold text-2xl tracking-tighter">HaberBot</span>
-          </nav>
-        </header>
+        <Header />
         <ArticlePageSkeleton />
       </>
     );
@@ -75,42 +72,7 @@ export default function ArticlePage() {
 
   return (
     <>
-      <header className="w-full top-0 sticky bg-[#050505] border-b border-white/5 z-50">
-        <nav className="flex justify-between items-center h-16 px-margin-desktop max-w-max-width mx-auto" aria-label="Ana Navigasyon">
-          <div className="flex items-center gap-8">
-            <span className="text-white font-extrabold text-2xl tracking-tighter" aria-label="HaberBot Logo">HaberBot</span>
-            <div className="hidden md:flex items-center gap-6" role="menubar">
-              <Link to="/" role="menuitem" className="text-neutral-400 hover:text-white font-medium text-sm transition-colors duration-150">Discover</Link>
-              <Link to="/" role="menuitem" aria-current="page" className="text-white font-bold border-b-2 border-white pb-2 text-sm">Feed</Link>
-              <Link to="/admin/sources" role="menuitem" className="text-neutral-400 hover:text-white font-medium text-sm transition-colors duration-150">Sources</Link>
-              <Link to="/admin" role="menuitem" className="text-neutral-400 hover:text-white font-medium text-sm transition-colors duration-150">Analytics</Link>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center bg-[#121214] border border-white/10 px-3 py-1.5 rounded-lg gap-2 w-64">
-              <span className="material-symbols-outlined text-neutral-400 text-[18px]" aria-hidden="true">search</span>
-              <label htmlFor="article-search-input" className="sr-only">Haberlerde ara</label>
-              <input 
-                id="article-search-input"
-                className="bg-transparent border-none focus:ring-0 text-sm text-white p-0 placeholder:text-neutral-500" 
-                placeholder="Haberlerde ara..." 
-                type="text"
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-neutral-400 hover:text-white transition-colors cursor-pointer text-[22px]" aria-hidden="true">notifications</span>
-              <Link to="/admin" aria-label="Yönetici Ayarları" className="material-symbols-outlined text-neutral-400 hover:text-white p-1 transition-colors text-[22px]">settings</Link>
-              <Link to="/login" aria-label="Giriş Yap / Profil" className="h-8 w-8 rounded-full overflow-hidden border border-white/15 flex items-center justify-center">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                  alt="Profil" 
-                  className="object-cover w-full h-full" 
-                />
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       <main className="max-w-max-width mx-auto px-margin-desktop py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">

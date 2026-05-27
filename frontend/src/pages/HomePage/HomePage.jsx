@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import { useDebounce } from '../../hooks/useDebounce';
 import { formatRelativeDate } from '../../utils/formatDate';
+import Header from '../../components/Header/Header';
 import './HomePage.css';
 
 // Fallback images representing modern tech portals
@@ -16,7 +17,7 @@ function stripHtmlTags(str) {
 }
 
 /**
- * Skeletal loader for Webtekno row cards.
+ * Skeletal loader for HaberBota row cards.
  */
 function RowCardSkeleton() {
   return (
@@ -112,9 +113,9 @@ export default function HomePage() {
   // Static indirim kuponları lists (Sıcak Fırsatlar)
   const firsatlar = [
     { title: "Amazon'da Günün En İyi Teknoloji Fırsatları", code: "Sıcak Fırsat", link: "#" },
-    { title: "Tüm Adidas Ayakkabılarda webtekno30 ile %30 İndirim!", code: "İndirim Kodu", link: "#" },
+    { title: "Tüm Adidas Ayakkabılarda HaberBot30 ile %30 İndirim!", code: "İndirim Kodu", link: "#" },
     { title: "Steam İlkbahar İndirimlerinde Kaçırılmayacak 5 Oyun", code: "Haber", link: "#" },
-    { title: "Protein Ocean Siparişlerinde webtekno Koduyla %10 İndirim", code: "Sponsorlu", link: "#" }
+    { title: "Protein Ocean Siparişlerinde HaberBot Koduyla %10 İndirim", code: "Sponsorlu", link: "#" }
   ];
 
   // Static Video items
@@ -140,69 +141,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-600 selection:text-white">
       {/* ========== WEBTEKNO NAVIGATION BAR ========== */}
-      <header className="webtekno-header">
-        <nav className="webtekno-nav" aria-label="Ana Navigasyon">
-          <div className="flex items-center gap-6 h-full">
-            <Link to="/" className="webtekno-logo" aria-label="HaberBot Logo">
-              web<span>tekno</span>
-            </Link>
-            
-            {/* Horizontal list of category lanes */}
-            <div className="hidden lg:flex items-center gap-1 h-full" role="menubar">
-              <button 
-                onClick={() => setSelectedTopic('Tümü')}
-                className={`menu-item ${selectedTopic === 'Tümü' ? 'active' : ''}`}
-                role="menuitem"
-              >
-                Tümü
-              </button>
-              {topicsList.slice(0, 8).map(topic => (
-                <button 
-                  key={topic.id}
-                  onClick={() => setSelectedTopic(topic.name)}
-                  className={`menu-item ${selectedTopic === topic.name ? 'active' : ''}`}
-                  role="menuitem"
-                >
-                  {topic.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="nav-controls">
-            {/* Search Box */}
-            <div className="webtekno-search">
-              <span className="material-symbols-outlined text-[16px] text-gray-500">search</span>
-              <input 
-                placeholder="Teknoloji haberlerinde ara..." 
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="material-symbols-outlined text-gray-500 hover:text-white text-[14px] ml-1"
-                >
-                  close
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1">
-              <button className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px]" aria-label="Bildirimler">notifications</button>
-              <Link to="/admin" className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px]" aria-label="Admin">settings</Link>
-              <Link to="/login" className="h-8 w-8 rounded-full border border-gray-800 overflow-hidden flex items-center justify-center ml-1">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                  alt="Profil" 
-                  className="object-cover w-full h-full" 
-                />
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedTopic="Tümü" />
 
       {/* ========== POPULER HASH-TAG BAR ========== */}
       <section className="populer-bar" aria-label="Popüler İçerikler">
@@ -215,7 +154,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== WEBTEKNO UPPER 3-COLUMN HERO GRID (REKAMLAR ELENDİ) ========== */}
-      <section className="webtekno-hero-grid" aria-label="Manşet Haberler">
+      <section className="HaberBot-hero-grid" aria-label="Manşet Haberler">
         {/* Sol Sütun: Sıcak Fırsatlar */}
         <div className="firsat-box">
           <h2 className="firsat-header">
@@ -297,7 +236,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== TWO-COLUMN MAIN CONTENT & SIDEBAR ========== */}
-      <main className="webtekno-main-layout">
+      <main className="HaberBot-main-layout">
         {/* Sol Sütun: Dikey Yatay Haber Akışı */}
         <section className="news-feed-list" aria-label="Teknoloji Haberleri">
           {articlesLoading ? (
@@ -339,7 +278,7 @@ export default function HomePage() {
         </section>
 
         {/* Sağ Sütun: Sidebar Widget'ları */}
-        <aside className="webtekno-sidebar" aria-label="Yan Menü">
+        <aside className="HaberBot-sidebar" aria-label="Yan Menü">
           <div className="trend-box">
             <h2 className="trend-title">
               <span>★</span> En Çok Okunanlar
@@ -412,7 +351,7 @@ export default function HomePage() {
           <div className="sitemap-grid">
             <div className="sitemap-brand-col">
               <span className="sitemap-brand-logo">
-                web<span>tekno</span>
+                haber<span>bota</span>
               </span>
               <p className="sitemap-brand-desc">
                 Türkiye'nin en popüler teknoloji haber ve inceleme platformu. HaberBot AI altyapısıyla çalışır.
@@ -469,13 +408,13 @@ export default function HomePage() {
             <a href="#" className="partner-logo">mackolik</a>
             <a href="#" className="partner-logo">onedio</a>
             <a href="#" className="partner-logo">mynet</a>
-            <a href="#" className="partner-logo">webtekno</a>
+            <a href="#" className="partner-logo">HaberBot</a>
             <a href="#" className="partner-logo">yemek.com</a>
             <a href="#" className="partner-logo">hisse.net</a>
           </div>
 
           <div className="text-center text-[0.7rem] text-gray-600 mt-6">
-            © 2026 HaberBot AI & Webtekno Redesign. Tüm hakları saklıdır.
+            © 2026 HaberBot AI & HaberBota Redesign. Tüm hakları saklıdır.
           </div>
         </div>
       </footer>
