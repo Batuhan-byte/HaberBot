@@ -943,3 +943,89 @@
     display: none !important;
   }
 }
+
+/* Modern Controls Wrap */
+.hb-controls-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4px 12px;
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hb-controls-wrap:focus-within,
+.hb-controls-wrap:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.05);
+}
+
+/* Premium Control Buttons */
+.hb-control-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #a1a1aa;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hb-control-btn .material-symbols-outlined {
+  font-size: 18px !important;
+}
+
+.hb-control-btn:hover {
+  color: #3b82f6;
+  background-color: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.hb-control-btn:active {
+  transform: scale(0.92);
+}
+
+/* Logout Button Specific styling */
+.hb-control-btn.btn-logout:hover {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Premium Profile Avatar Frame */
+.hb-profile-avatar {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 99, 235, 0.3);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.1);
+  margin-left: 4px;
+}
+
+.hb-profile-avatar:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  transform: scale(1.08) rotate(2deg);
+}
+
+.hb-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

@@ -177,27 +177,30 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="hb-controls-wrap">
               {isLoggedIn ? (
                 <>
-                  <button className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Bildirimler">notifications</button>
-                  <Link to="/admin" className="material-symbols-outlined text-gray-400 p-2 hover:bg-gray-900 rounded-full text-[20px] hidden md:inline-block" aria-label="Admin">settings</Link>
+                  <button className="hb-control-btn" aria-label="Bildirimler">
+                    <span className="material-symbols-outlined">notifications</span>
+                  </button>
+                  <Link to="/admin" className="hb-control-btn" aria-label="Admin" title="Yönetici Ayarları">
+                    <span className="material-symbols-outlined">settings</span>
+                  </Link>
                   <button 
                     onClick={() => {
                       localStorage.removeItem('admin_api_key');
                       setIsLoggedIn(false);
                       navigate('/');
                     }}
-                    className="material-symbols-outlined text-gray-400 p-2 hover:bg-red-950/20 hover:text-red-500 rounded-full text-[20px] hidden md:inline-block" 
+                    className="hb-control-btn btn-logout" 
                     title="Çıkış Yap"
                   >
-                    logout
+                    <span className="material-symbols-outlined">logout</span>
                   </button>
-                  <Link to="/admin" className="h-8 w-8 rounded-full border border-gray-800 overflow-hidden flex items-center justify-center ml-1" title="Yönetici Paneli">
+                  <Link to="/admin" className="hb-profile-avatar" title="Yönetici Paneli">
                     <img 
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
                       alt="Profil" 
-                      className="object-cover w-full h-full" 
                     />
                   </Link>
                 </>
@@ -207,21 +210,21 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                   <span>Giriş Yap</span>
                 </Link>
               )}
-              
-              {/* Mobile Hamburger Toggle */}
-              <button 
-                className={`mobile-menu-toggle lg:hidden ${isMobileMenuOpen ? 'is-active' : ''}`}
-                onClick={() => {
-                  setIsMobileMenuOpen(!isMobileMenuOpen);
-                  setActiveDropdownSlug(null); // Close active mega drawer
-                }}
-                aria-label="Menüyü Aç/Kapat"
-              >
-                <span className="bar"></span>
-                <span className="bar"></span>
-                <span className="bar"></span>
-              </button>
             </div>
+            
+            {/* Mobile Hamburger Toggle */}
+            <button 
+              className={`mobile-menu-toggle lg:hidden ${isMobileMenuOpen ? 'is-active' : ''}`}
+              onClick={() => {
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+                setActiveDropdownSlug(null); // Close active mega drawer
+              }}
+              aria-label="Menüyü Aç/Kapat"
+            >
+              <span className="bar"></span>
+              <span className="bar"></span>
+              <span className="bar"></span>
+            </button>
           </div>
         </nav>
 
