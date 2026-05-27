@@ -103,13 +103,25 @@
   gap: 16px;
 }
 
-/* Search Container */
+/* Search Container - Unified Premium Pill Design */
 .hb-search-wrapper {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   position: relative;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 38px;
+  width: 38px; /* Circular base size when closed */
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.hb-search-wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .hb-search-trigger-btn {
@@ -120,32 +132,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
   z-index: 2;
 }
 
 .hb-search-trigger-btn:hover {
   color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .hb-search-trigger-btn .material-symbols-outlined {
-  font-size: 22px !important;
+  font-size: 20px !important;
 }
 
 .hb-search-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
   width: 0;
   opacity: 0;
   visibility: hidden;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  background-color: #0c0c0e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 0;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
@@ -156,29 +167,40 @@
   outline: none;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   width: 100%;
-  padding: 0;
+  padding: 0 4px;
 }
 
 .hb-search-input-container input::placeholder {
   color: #55555e;
 }
 
-/* Open State */
+/* Open State - Unified Pill Expansion */
+.hb-search-wrapper.is-open {
+  width: 250px; /* Expands to a beautiful wide pill */
+  background-color: rgba(12, 12, 14, 0.85);
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0 4px 0 14px;
+}
+
+.hb-search-wrapper.is-open:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
 .hb-search-wrapper.is-open .hb-search-input-container {
-  width: 200px;
+  width: 100%;
   opacity: 1;
   visibility: visible;
-  padding: 6px 12px;
-  margin-right: 8px; /* Slides in to the left of the button */
-  border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
 }
 
 .hb-search-wrapper.is-open .hb-search-trigger-btn {
   color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.08);
+  background-color: rgba(37, 99, 235, 0.08);
 }
 
 /* Responsive category and search sizing for mid-sized desktop screens (1024px to 1280px) */
@@ -188,8 +210,8 @@
     font-size: 0.72rem;
     margin: 0 1px;
   }
-  .hb-search-wrapper.is-open .hb-search-input-container {
-    width: 140px;
+  .hb-search-wrapper.is-open {
+    width: 180px;
   }
 }
 
@@ -1156,6 +1178,27 @@ body.light-mode .hb-action-icon-btn:hover {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
+body.light-mode .hb-search-wrapper {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.light-mode .hb-search-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+body.light-mode .hb-search-wrapper.is-open {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.05), inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-mode .hb-search-wrapper.is-open:focus-within {
+  border-color: #2563eb !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
 body.light-mode .hb-search-trigger-btn {
   color: #4b5563 !important;
 }
@@ -1171,8 +1214,8 @@ body.light-mode .hb-search-wrapper.is-open .hb-search-trigger-btn {
 }
 
 body.light-mode .hb-search-input-container {
-  background-color: #ffffff !important;
-  border-color: rgba(9, 9, 11, 0.15) !important;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 body.light-mode .hb-search-input-container input {
