@@ -33,7 +33,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -1.5px;
-  color: #ef4444; /* Brand Red */
+  color: #ffffff; /* White for Haber */
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -42,8 +42,8 @@
 }
 
 .webtekno-logo span {
-  color: #ef4444; /* Brand Red */
-  text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  color: #2563eb; /* Premium Blue for Bot */
+  text-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
 }
 
 /* Horizontal Menu Items */
@@ -608,12 +608,12 @@
   transform: scale(0.92);
 }
 
-/* Red Bottom Accent Bar running under header */
+/* Blue Bottom Accent Bar running under header */
 .webtekno-bottom-accent {
   height: 3px;
   width: 100%;
-  background-color: #ef4444;
-  box-shadow: 0 1px 8px rgba(239, 68, 68, 0.25);
+  background-color: #2563eb;
+  box-shadow: 0 1px 8px rgba(37, 99, 235, 0.35);
   position: absolute;
   bottom: -3px;
   left: 0;
@@ -695,14 +695,14 @@
 .drawer-user-avatar {
   width: 36px;
   height: 36px;
-  background-color: #ef4444; /* Webtekno red avatar */
+  background-color: #2563eb; /* Blue avatar */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
 }
 
 .drawer-username {
@@ -714,7 +714,7 @@
 }
 
 .drawer-user-info:hover .drawer-username {
-  color: #ef4444;
+  color: #2563eb;
 }
 
 .drawer-close-btn {

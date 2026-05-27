@@ -237,12 +237,12 @@
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-left: 4px solid #ef4444;
+  border-left: 4px solid #2563eb;
   padding-left: 12px;
 }
 
 .section-header span {
-  color: #ef4444; /* Video Red Accent */
+  color: #2563eb; /* Video Blue Accent */
 }
 
 .video-slider {
@@ -281,7 +281,7 @@
 
 .video-card:hover {
   transform: translateY(-4px);
-  border-color: #ef4444;
+  border-color: #2563eb;
 }
 
 .video-thumb-wrap {
@@ -306,7 +306,7 @@
 }
 
 .play-icon {
-  background-color: #ef4444;
+  background-color: #2563eb;
   color: #ffffff;
   width: 36px;
   height: 36px;
@@ -315,7 +315,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
 }
 
 .video-title {
@@ -463,7 +463,7 @@
 }
 
 .trend-title span {
-  color: #ef4444;
+  color: #2563eb;
 }
 
 /* Top trend item */
@@ -491,7 +491,7 @@
 }
 
 .trend-top-badge {
-  background-color: #ef4444;
+  background-color: #2563eb;
   color: #ffffff;
   font-size: 0.65rem;
   font-weight: 800;
@@ -538,7 +538,7 @@
 }
 
 .trend-item:hover .trend-number {
-  color: #ef4444;
+  color: #2563eb;
 }
 
 .trend-item-body {

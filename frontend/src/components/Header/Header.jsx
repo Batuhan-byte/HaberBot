@@ -124,7 +124,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
             </button>
             
             <Link to="/" className="webtekno-logo" aria-label="HaberBot Logo" onClick={() => setActiveDropdownSlug(null)}>
-              web<span>tekno</span>
+              Haber<span>Bot</span>
             </Link>
             
             {/* ========== DESKTOP TOPICS NAVIGATION ========== */}
@@ -455,7 +455,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
           <span className="partner-logo match-direct">MATCH EN DIRECT</span>
           <span className="partner-logo">mynet</span>
           <span className="partner-logo">onedio</span>
-          <span className="partner-logo">webtekno</span>
+          <span className="partner-logo">HaberBot</span>
           <span className="partner-logo">Yemek.com</span>
         </div>
       </div>

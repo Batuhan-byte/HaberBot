@@ -5,7 +5,7 @@
 
 /* Category Title Styling */
 .category-title-container {
-  border-bottom: 2px solid #ef4444; /* HaberBot red separator bar */
+  border-bottom: 2px solid #2563eb; /* HaberBot blue separator bar */
   padding-bottom: 12px;
   margin-top: 16px;
 }
@@ -21,12 +21,12 @@
   gap: 12px;
 }
 
-/* Red vertical block indicator */
+/* Blue vertical block indicator */
 .category-page-title span {
   display: inline-block;
   width: 8px;
   height: 24px;
-  background-color: #ef4444;
+  background-color: #2563eb;
   border-radius: 2px;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .cat-manset-badge {
-  background-color: #ef4444;
+  background-color: #2563eb;
   color: #ffffff;
   font-size: 0.65rem;
   font-weight: 800;
