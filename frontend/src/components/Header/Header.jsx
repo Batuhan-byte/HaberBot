@@ -125,9 +125,6 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                   role="menuitem"
                 >
                   {topic.name}
-                  <span className={`dropdown-indicator material-symbols-outlined text-[10px] ml-1 transition-transform ${isDrawerActive ? 'rotate-180' : ''}`}>
-                    keyboard_arrow_down
-                  </span>
                 </a>
               );
             })}

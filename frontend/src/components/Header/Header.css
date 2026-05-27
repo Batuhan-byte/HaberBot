@@ -48,13 +48,13 @@
 .menu-item {
   color: #8e929b;
   font-family: 'Outfit', 'Inter', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem; /* Slightly smaller for premium crispness */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-decoration: none;
-  padding: 6px 12px;
-  margin: 0 3px;
+  padding: 4px 10px; /* Slightly tighter vertical and horizontal padding */
+  margin: 0 2px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: 20px;
   display: inline-flex;
@@ -109,13 +109,16 @@
   border-radius: 20px;
   padding: 4px 12px;
   height: 36px;
-  transition: all 0.3s ease;
+  width: 130px; /* Explicit default width to avoid compression */
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
 .webtekno-search:focus-within {
   border-color: #3b82f6;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
   background-color: #111111;
+  width: 180px; /* Dynamic expansion */
 }
 
 .webtekno-search input {
@@ -124,12 +127,27 @@
   outline: none;
   color: #ffffff;
   font-size: 0.8rem;
-  width: 150px;
+  width: 100%; /* Fully responsive width inside parent container */
   padding: 0 4px;
 }
 
 .webtekno-search input::placeholder {
   color: #555555;
+}
+
+/* Responsive category and search sizing for mid-sized desktop screens (1024px to 1280px) */
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .menu-item {
+    padding: 4px 7px;
+    font-size: 0.72rem;
+    margin: 0 1px;
+  }
+  .webtekno-search {
+    width: 90px;
+  }
+  .webtekno-search:focus-within {
+    width: 140px;
+  }
 }
 
 /* Mobile Hamburger Toggle */
