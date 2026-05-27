@@ -983,13 +983,13 @@
   background-color: rgba(239, 68, 68, 0.08);
 }
 
-/* Premium Red Pill Login Button */
+/* Premium Blue Pill Login Button */
 .hb-premium-login-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: #dc2626; /* Crisp premium Webtekno Red */
+  background-color: #2563eb; /* Resmi HaberBot marka mavisi */
   color: #ffffff;
   padding: 8px 20px;
   border-radius: 9999px;
@@ -1000,15 +1000,15 @@
   letter-spacing: 0.5px;
   text-decoration: none;
   border: none;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .hb-premium-login-btn:hover {
-  background-color: #ef4444; /* Slightly brighter red */
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  background-color: #3b82f6; /* Vurgulu mavi */
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
   transform: translateY(-1px);
 }
 
@@ -1094,7 +1094,7 @@
 .hb-theme-toggle.is-light .hb-theme-toggle-thumb {
   left: 2px; /* Positioned to the left */
   background-color: #ffffff;
-  color: #dc2626;
+  color: #2563eb; /* HaberBot brand blue */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
