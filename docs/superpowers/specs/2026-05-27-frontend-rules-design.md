@@ -33,8 +33,8 @@ Her kural dosyası, Antigravity'ye hangi koşullar altında tetiklenmesi gerekti
   * Sunum ve Mantık (Logic & Presentation) ayrımı: HTTP/Fetch isteklerinin bileşenlerden custom hook'lara taşınması zorunluluğu.
   * Diğer 5 alt kural dosyasına yönlendirme (routing) matrisi.
 
-### 2.2. `frontend-design-system.md` (Tasarım Sistemi ve Estetik)
-* **Konum:** `.agents/rules/frontend-design-system.md`
+### 2.2. `design-system.md` (Tasarım Sistemi ve Estetik)
+* **Konum:** `.agents/rules/frontend/design-system.md`
 * **Görevi:** Görsel kaliteyi, koyu tema tutarlılığını ve mikro-animasyon standartlarını en üst düzeye çıkarmak.
 * **Referans Yetenek:** `frontend-design`
 * **İçerik Başlıkları:**
@@ -43,8 +43,8 @@ Her kural dosyası, Antigravity'ye hangi koşullar altında tetiklenmesi gerekti
   * **Glassmorphism CSS Şablonu:** backdrop-filter ve ince kenarlık kuralları.
   * **Mikro-Animasyon Standartları:** Hover ve active durumlarında kullanılacak CSS transform ve scale kodları.
 
-### 2.3. `frontend-state-api.md` (Veri Çekme, State ve B-Planı)
-* **Konum:** `.agents/rules/frontend-state-api.md`
+### 2.3. `state-api.md` (Veri Çekme, State ve B-Planı)
+* **Konum:** `.agents/rules/frontend/state-api.md`
 * **Görevi:** TanStack React Query standartları ve Gemini API hatalarına karşı dayanıklılık (resilience).
 * **Referans Yetenek:** `vercel-react-best-practices`
 * **İçerik Başlıkları:**
@@ -52,22 +52,22 @@ Her kural dosyası, Antigravity'ye hangi koşullar altında tetiklenmesi gerekti
   * API Waterfall'ları önlemek için paralel fetch `Promise.all` şablonları.
   * **B-Planı Fallback Şablonları:** `title_tr` yoksa `title` render etme; `summary_tr` yoksa `original_content` preview gösterme kod blokları.
 
-### 2.4. `frontend-layout-nav.md` (Navigasyon, Yerleşim ve Drawer Güvenliği)
-* **Konum:** `.agents/rules/frontend-layout-nav.md`
+### 2.4. `layout-nav.md` (Navigasyon, Yerleşim ve Drawer Güvenliği)
+* **Konum:** `.agents/rules/frontend/layout-nav.md`
 * **Görevi:** Full-width akışkan navbar tasarımları ve fixed drawer katmanlanma (stacking context) hatalarının çözümü.
 * **İçerik Başlıkları:**
   * Fluid Navbar CSS kuralları (Header genişliğinin 100% yayılması).
   * **Fixed Drawer Stacking Context Güvenliği:** `position: fixed` olan tüm yan menülerin ebeveyn transform/filter/backdrop-filter içeren div'lerin dışına yerleştirilmesi kuralları.
 
-### 2.5. `frontend-content.md` (Zengin HTML İçerik ve Makale Görünümü)
-* **Konum:** `.agents/rules/frontend-content.md`
+### 2.5. `content.md` (Zengin HTML İçerik ve Makale Görünümü)
+* **Konum:** `.agents/rules/frontend/content.md`
 * **Görevi:** RSS ham makale HTML verilerini kusursuz gazete/dergi estetiğiyle sunmak.
 * **İçerik Başlıkları:**
   * `dangerouslySetInnerHTML` güvenli render kalıpları.
   * `.news-content` sınıfı altında yer alan `<p>`, `<h2>`, `blockquote`, `pre` etiketlerinin okuma dostu tipografi (line-height: 1.8) ve kenar boşluğu (margin) ayarları.
 
-### 2.6. `frontend-interactive-admin.md` (Etkileşim, Formlar ve Admin)
-* **Konum:** `.agents/rules/frontend-interactive-admin.md`
+### 2.6. `interactive-admin.md` (Etkileşim, Formlar ve Admin)
+* **Konum:** `.agents/rules/frontend/interactive-admin.md`
 * **Görevi:** Form elemanları, login tasarımı, skeleton ekranlar ve admin yönetimi.
 * **İçerik Başlıkları:**
   * Focus durumunda glow efekti alan koyu tema form girdi tasarımları.
