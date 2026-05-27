@@ -23,7 +23,7 @@ HaberBot, premium, son teknoloji ürünü bir "Karanlık Mod (Dark Mode)" esteti
 * **Kod Metni:** Teknik içerikler için eş aralıklı (Monospaced - `'JetBrains Mono', 'Fira Code', monospace`) kullanılır, kod bloklarında netlik sağlar.
 
 ## 4. Bileşen (Component) Stilleri
-* **Kartlar/Konteynerler:** İnce, belli belirsiz kenarlıklara (`1px solid #222222`) sahip minimalist yapı. Kullanıcı etkileşimine dokunsal geri bildirim sağlamak amacıyla belirgin bir kenarlık rengi değişimi (`#444444`) ile tepki verirler (`card-border-hover`).
+* **Kartlar/Konteynerler:** İnce, belli belirsiz kenarlıklara (`1px solid #222222`) sahip minimalist yapı. Kullanıcı etkileşime dokunsal geri bildirim sağlamak amacıyla belirgin bir kenarlık rengi değişimi (`#444444`) ile tepki verirler (`card-border-hover`).
 * **Zengin Metin (Rich Text) İçeriği:** Son derece özenle derlenmiş HTML oluşturma. Alıntılar (Blockquotes), hafif mavi tonlu bir arka plana ve belirgin Elektrik Mavisi sol kenarlığa sahiptir. Tablolar, koyu başlıklar (`#111111`) ve satırlardaki ince hover efektleriyle yoğun bir şekilde stillendirilmiştir.
 * **Kaydırma Çubukları (Scrollbars):** Karanlık estetikle kusursuz bir şekilde bütünleşen, koyu renkli bir tutamağa (`#222222`) sahip özel, ultra ince (4px) kaydırma çubukları.
 
