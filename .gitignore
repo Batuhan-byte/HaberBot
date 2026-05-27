@@ -37,4 +37,5 @@ Thumbs.db
 # Graphify & Agents
 graphify-out/
 .agents/
+.agent/
 skills-lock.json
