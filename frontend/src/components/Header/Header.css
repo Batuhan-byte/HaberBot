@@ -186,6 +186,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 0 4px 0 14px;
+  overflow: visible; /* Prevent clipping SearchDropdown suggestions */
 }
 
 .hb-search-wrapper.is-open:focus-within {
