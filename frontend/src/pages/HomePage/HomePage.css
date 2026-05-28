@@ -59,8 +59,8 @@
 
 /* Sol Sütun: Sıcak Fırsatlar */
 .firsat-box {
-  background: linear-gradient(180deg, #1b003a 0%, #000000 100%);
-  border: 1px solid #331166;
+  background: linear-gradient(180deg, #091835 0%, #000000 100%);
+  border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -72,10 +72,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #b784ff;
+  color: #60a5fa;
   font-weight: 800;
   font-size: 0.95rem;
-  border-bottom: 1px solid #331166;
+  border-bottom: 1px solid rgba(37, 99, 235, 0.2);
   padding-bottom: 8px;
 }
 
