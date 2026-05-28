@@ -196,7 +196,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
               >
                 <span className="material-symbols-outlined">search</span>
               </button>
-              <div className="hb-search-input-container" style={{ position: 'relative' }}>
+              <div className="hb-search-input-container">
                 <input 
                   placeholder="Haberlerde ara..." 
                   type="text"
@@ -221,18 +221,18 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                     close
                   </button>
                 )}
-                {showDropdown && debouncedSearch.length >= 2 && (
-                  <SearchDropdown 
-                    query={debouncedSearch}
-                    onSelect={(article) => {
-                      navigate(`/haber/${article.id}`);
-                      setLocalSearch('');
-                      setShowDropdown(false);
-                      setIsSearchOpen(false);
-                    }}
-                  />
-                )}
               </div>
+              {showDropdown && debouncedSearch.length >= 2 && (
+                <SearchDropdown 
+                  query={debouncedSearch}
+                  onSelect={(article) => {
+                    navigate(`/haber/${article.id}`);
+                    setLocalSearch('');
+                    setShowDropdown(false);
+                    setIsSearchOpen(false);
+                  }}
+                />
+              )}
             </div>
 
             {/* Nav Actions Group */}

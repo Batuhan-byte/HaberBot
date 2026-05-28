@@ -159,7 +159,6 @@
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
-  position: relative; /* Required for absolute positioning of SearchDropdown */
 }
 
 .hb-search-input-container input {
