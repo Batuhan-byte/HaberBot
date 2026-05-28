@@ -6,7 +6,8 @@
 .hb-search-dropdown-panel {
   position: absolute;
   top: calc(100% + 12px);
-  right: -8px; /* Shifted slightly to the right to perfectly align with the search capsule's outer border glow */
+  right: -25px;
+  /* Shifted slightly to the right to perfectly align with the search capsule's outer border glow */
   width: 340px;
   background: rgba(10, 10, 12, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.08);
