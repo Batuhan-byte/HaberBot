@@ -3,6 +3,8 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import { formatRelativeDate } from '../../utils/formatDate';
+import { useDebounce } from '../../hooks/useDebounce';
+import SearchDropdown from '../SearchDropdown/SearchDropdown';
 import './Header.css';
 
 const FALLBACK_IMAGE_ALT = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80";
@@ -24,6 +26,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const adminKey = localStorage.getItem('admin_api_key');
@@ -57,6 +60,9 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
+  // Debounced search for dropdown suggestions (300ms delay)
+  const debouncedSearch = useDebounce(localSearch, 300);
+
   // Fetch topics
   const { data: topicsData } = useQuery({
     queryKey: ['topics'],
@@ -81,6 +87,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
         setActiveDropdownSlug(null);
         setIsMobileMenuOpen(false);
         setIsSearchOpen(false);
+        setShowDropdown(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -128,11 +135,9 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
 
   const handleSearchSubmit = (e) => {
     if (e.key === 'Enter' || e.type === 'click') {
-      if (setSearchQuery) {
-        setSearchQuery(localSearch);
-      } else {
-        // Redirect to homepage with search query parameter
-        navigate(`/?search=${encodeURIComponent(localSearch)}`);
+      if (localSearch.trim()) {
+        navigate(`/arama?q=${encodeURIComponent(localSearch)}`);
+        setShowDropdown(false);
       }
       setIsMobileMenuOpen(false);
     }
@@ -183,29 +188,49 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
             <div className={`hb-search-wrapper ${isSearchOpen ? 'is-open' : ''}`}>
               <button 
                 className="hb-search-trigger-btn"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                onClick={() => {
+                  setIsSearchOpen(!isSearchOpen);
+                  setShowDropdown(false);
+                }}
                 aria-label="Arama Yap"
               >
                 <span className="material-symbols-outlined">search</span>
               </button>
-              <div className="hb-search-input-container">
+              <div className="hb-search-input-container" style={{ position: 'relative' }}>
                 <input 
                   placeholder="Haberlerde ara..." 
                   type="text"
                   value={localSearch}
-                  onChange={(e) => setLocalSearch(e.target.value)}
+                  onChange={(e) => {
+                    setLocalSearch(e.target.value);
+                    setShowDropdown(true);
+                  }}
                   onKeyDown={handleSearchSubmit}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 />
                 {localSearch && (
                   <button 
                     onClick={() => {
                       setLocalSearch('');
                       if (setSearchQuery) setSearchQuery('');
+                      setShowDropdown(false);
                     }}
                     className="material-symbols-outlined text-gray-500 hover:text-white text-[14px] ml-1"
                   >
                     close
                   </button>
+                )}
+                {showDropdown && debouncedSearch.length >= 2 && (
+                  <SearchDropdown 
+                    query={debouncedSearch}
+                    onSelect={(article) => {
+                      navigate(`/haber/${article.id}`);
+                      setLocalSearch('');
+                      setShowDropdown(false);
+                      setIsSearchOpen(false);
+                    }}
+                  />
                 )}
               </div>
             </div>

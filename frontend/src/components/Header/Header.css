@@ -159,6 +159,7 @@
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
+  position: relative; /* Required for absolute positioning of SearchDropdown */
 }
 
 .hb-search-input-container input {
@@ -193,9 +194,11 @@
 }
 
 .hb-search-wrapper.is-open .hb-search-input-container {
-  width: 100%;
   opacity: 1;
   visibility: visible;
+  width: 100%;
+  max-width: 400px;
+  overflow: visible; /* Allow dropdown to overflow */
 }
 
 .hb-search-wrapper.is-open .hb-search-trigger-btn {

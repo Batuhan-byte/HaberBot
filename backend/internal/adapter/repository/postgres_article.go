@@ -141,7 +141,7 @@ func (r *PostgresArticleRepo) Search(ctx context.Context, query string, source v
 	var args []interface{}
 	
 	if source == "" {
-		// Search only by query in Turkish title and summary
+		// Search only by query in Turkish title and summary with relevance scoring
 		searchTerm := "%" + query + "%"
 		queryStr = `
 			SELECT id, title, turkish_title, original_url, source_type,
@@ -149,12 +149,19 @@ func (r *PostgresArticleRepo) Search(ctx context.Context, query string, source v
 				processed_at, fetched_at, created_at
 			FROM articles
 			WHERE (title ILIKE $1 OR turkish_title ILIKE $1 OR turkish_summary ILIKE $1 OR original_content ILIKE $1)
-			ORDER BY fetched_at DESC
+			ORDER BY 
+				CASE 
+					WHEN title ILIKE $1 THEN 3
+					WHEN turkish_title ILIKE $1 THEN 2
+					WHEN turkish_summary ILIKE $1 THEN 1
+					ELSE 0
+				END DESC,
+				fetched_at DESC
 			LIMIT $2 OFFSET $3
 		`
 		args = []interface{}{searchTerm, limit, offset}
 	} else {
-		// Search by query and filter by source
+		// Search by query and filter by source with relevance scoring
 		searchTerm := "%" + query + "%"
 		queryStr = `
 			SELECT id, title, turkish_title, original_url, source_type,
@@ -163,7 +170,14 @@ func (r *PostgresArticleRepo) Search(ctx context.Context, query string, source v
 			FROM articles
 			WHERE (title ILIKE $1 OR turkish_title ILIKE $1 OR turkish_summary ILIKE $1 OR original_content ILIKE $1)
 			AND source_type = $2
-			ORDER BY fetched_at DESC
+			ORDER BY 
+				CASE 
+					WHEN title ILIKE $1 THEN 3
+					WHEN turkish_title ILIKE $1 THEN 2
+					WHEN turkish_summary ILIKE $1 THEN 1
+					ELSE 0
+				END DESC,
+				fetched_at DESC
 			LIMIT $3 OFFSET $4
 		`
 		args = []interface{}{searchTerm, source.String(), limit, offset}

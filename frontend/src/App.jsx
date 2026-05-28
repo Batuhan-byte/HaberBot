@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomePage from './pages/HomePage/HomePage';
 import ArticlePage from './pages/ArticlePage/ArticlePage';
 import TopicPage from './pages/TopicPage/TopicPage';
+import SearchPage from './pages/SearchPage/SearchPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AdminDashboard from './pages/AdminPage/AdminDashboard';
 import AdminSources from './pages/AdminPage/AdminSources';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/kategori/:slug" element={<TopicPage />} />
           <Route path="/haber/:id" element={<ArticlePage />} />
+          <Route path="/arama" element={<SearchPage />} />
           <Route path="/login" element={<LoginPage />} />
           
           {/* Admin Routes */}
