@@ -8,10 +8,20 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// mustEnv reads a required environment variable and fatally exits if not set.
+func mustEnv(key string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		log.Fatalf("FATAL: Required environment variable %q is not set. Application cannot start.", key)
+	}
+	return val
+}
+
 // Config holds all configuration parameters for the application.
 type Config struct {
 	Port                 string
 	Env                  string
+	IsProduction         bool   // true when ENV=production; enables Secure cookies, strict headers etc.
 	DatabaseURL          string
 	GeminiAPIKey         string
 	AdminAPIKey          string
@@ -76,10 +86,7 @@ func Load() Config {
 		}
 	}
 
-	jwtSecret := os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
-		jwtSecret = "haberbot-super-secret-jwt-signing-key-12345"
-	}
+	jwtSecret := mustEnv("JWT_SECRET")
 
 	jwtAccessTTLMinutes := 15
 	if accessStr := os.Getenv("JWT_ACCESS_TTL_MINUTES"); accessStr != "" {
@@ -98,6 +105,7 @@ func Load() Config {
 	return Config{
 		Port:                 port,
 		Env:                  env,
+		IsProduction:         env == "production",
 		DatabaseURL:          os.Getenv("DATABASE_URL"),
 		GeminiAPIKey:         os.Getenv("GEMINI_API_KEY"),
 		AdminAPIKey:          os.Getenv("ADMIN_API_KEY"),

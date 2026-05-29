@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminPage/AdminDashboard';
 import AdminSources from './pages/AdminPage/AdminSources';
 import AdminContent from './pages/AdminPage/AdminContent';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
 import AuthModal from './components/AuthModal/AuthModal';
 import './App.css';
 
@@ -38,6 +39,13 @@ function App() {
           <Route path="/arama" element={<SearchPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          
+          {/* User Profile Route (Protected) */}
+          <Route path="/profile/:username" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
           
           {/* Admin Routes */}
           <Route path="/admin" element={

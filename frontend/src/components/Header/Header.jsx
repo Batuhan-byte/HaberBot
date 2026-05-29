@@ -5,6 +5,7 @@ import { api } from '../../services/api';
 import { formatRelativeDate } from '../../utils/formatDate';
 import { useDebounce } from '../../hooks/useDebounce';
 import SearchDropdown from '../SearchDropdown/SearchDropdown';
+import { getAvatarUrl } from '../../utils/constants';
 import './Header.css';
 
 const FALLBACK_IMAGE_ALT = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80";
@@ -27,11 +28,38 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [user, setUser] = useState(null);
 
   const checkLogin = () => {
     const adminKey = localStorage.getItem('admin_api_key');
-    const user = localStorage.getItem('user');
-    setIsLoggedIn(!!adminKey || !!user);
+    const storedUser = localStorage.getItem('user');
+    setIsLoggedIn(!!adminKey || !!storedUser);
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        setUser(null);
+      }
+    } else if (adminKey) {
+      setUser({ username: 'admin1', role: 'Admin', avatar_url: '' });
+    } else {
+      setUser(null);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_api_key');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    setUser(null);
+    navigate('/');
+    window.location.reload();
+  };
+
+  const handleEditProfileClick = () => {
+    if (user?.username) {
+      navigate(`/profile/${user.username}?edit=true`);
+    }
   };
 
   useEffect(() => {
@@ -256,30 +284,52 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
               </button>
 
               {/* Üye Girişi / Profil Yönetimi */}
-              {isLoggedIn ? (
-                <div className="flex items-center gap-1">
-                  <Link to="/admin" className="hb-action-icon-btn" aria-label="Admin" title="Yönetici Ayarları">
-                    <span className="material-symbols-outlined">settings</span>
+              {isLoggedIn && user ? (
+                <div className="hb-user-menu-wrapper">
+                  {/* Trigger Pill (Clicking goes to profile, Hover opens dropdown) */}
+                  <Link to={`/profile/${user.username}`} className="hb-user-pill-trigger" title="Profilime Git">
+                    {/* Profile Image/Circle */}
+                    <div className="hb-pill-avatar-wrap">
+                      {user.avatar_url ? (
+                        <img 
+                          src={getAvatarUrl(user.avatar_url)} 
+                          alt={user.username[0].toUpperCase()} 
+                          className="hb-pill-avatar-img"
+                          onError={(e) => {
+                            e.target.src = getAvatarUrl("/avatars/presets/preset-1.png");
+                          }}
+                        />
+                      ) : (
+                        <div className="hb-pill-avatar-letter">
+                          {user.username[0].toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Username Text (Truncated) */}
+                    <span className="hb-pill-username">
+                      {user.username.length > 8 ? `${user.username.slice(0, 6)}...` : user.username}
+                    </span>
+                    
+                    {/* Down Arrow Indicator */}
+                    <span className="material-symbols-outlined hb-pill-arrow">arrow_drop_down</span>
                   </Link>
-                  <button 
-                    onClick={() => {
-                      localStorage.removeItem('admin_api_key');
-                      localStorage.removeItem('user');
-                      setIsLoggedIn(false);
-                      navigate('/');
-                      window.location.reload();
-                    }}
-                    className="hb-action-icon-btn btn-logout" 
-                    title="Çıkış Yap"
-                  >
-                    <span className="material-symbols-outlined">logout</span>
-                  </button>
-                  <Link to="/admin" className="hb-profile-avatar" title="Yönetici Paneli">
-                    <img 
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                      alt="Profil" 
-                    />
-                  </Link>
+
+                  {/* Dropdown Menu */}
+                  <div className="hb-user-hover-dropdown">
+                    <button onClick={handleEditProfileClick} className="hb-dropdown-menu-item">
+                      Profilimi Düzenle
+                    </button>
+                    {user.role === 'Admin' && (
+                      <Link to="/admin" className="hb-dropdown-menu-item">
+                        Yönetici Ayarları
+                      </Link>
+                    )}
+                    <div className="hb-dropdown-divider"></div>
+                    <button onClick={handleLogout} className="hb-dropdown-menu-item item-logout">
+                      Çıkış Yap
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button 
@@ -469,7 +519,17 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
         {/* User Account / Close Button Bar */}
         <div className="left-drawer-header">
           {isLoggedIn ? (
-            <div className="drawer-user-info">
+            <Link 
+              to={`/profile/${(() => {
+                try {
+                  return JSON.parse(localStorage.getItem('user'))?.username || '';
+                } catch(e) {
+                  return '';
+                }
+              })()}`}
+              className="drawer-user-info hover:opacity-80 transition-opacity"
+              onClick={() => setIsLeftDrawerOpen(false)}
+            >
               <div className="drawer-user-avatar bg-blue-500/20 text-blue-400 border border-blue-500/30">
                 <span className="material-symbols-outlined text-[20px]">person</span>
               </div>
@@ -484,7 +544,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                   })()}
                 </span>
               </div>
-            </div>
+            </Link>
           ) : (
             <div 
               className="drawer-user-info cursor-pointer" 

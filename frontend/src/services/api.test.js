@@ -13,6 +13,7 @@ const {
   fetchTopicArticles,
   searchArticles,
   generateSummary,
+  getArticleSummary,
   createTopic,
   updateTopic,
   deleteTopic,
@@ -77,7 +78,8 @@ describe('API service', () => {
       const result = await fetchArticle('42');
 
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        'http://test-api/articles/42'
+        'http://test-api/articles/42',
+        expect.any(Object)
       );
       expect(result).toEqual(article);
     });
@@ -150,6 +152,21 @@ describe('API service', () => {
       expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://test-api/articles/42/summary',
         expect.objectContaining({ method: 'POST' })
+      );
+      expect(result).toEqual(summary);
+    });
+  });
+
+  describe('getArticleSummary', () => {
+    it('fetches summary via GET', async () => {
+      const summary = { summary: 'Özet', article_id: '42' };
+      globalThis.fetch.mockResolvedValue(mockSuccessResponse(summary));
+
+      const result = await api.getArticleSummary('42');
+
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        'http://test-api/articles/42/summary',
+        expect.objectContaining({ method: 'GET' })
       );
       expect(result).toEqual(summary);
     });
@@ -246,6 +263,7 @@ describe('API service', () => {
       expect(api.getTopicArticles).toBe(fetchTopicArticles);
       expect(api.searchArticles).toBe(searchArticles);
       expect(api.generateSummary).toBe(generateSummary);
+      expect(api.getArticleSummary).toBe(getArticleSummary);
       expect(api.createTopic).toBe(createTopic);
       expect(api.updateTopic).toBe(updateTopic);
       expect(api.deleteTopic).toBe(deleteTopic);

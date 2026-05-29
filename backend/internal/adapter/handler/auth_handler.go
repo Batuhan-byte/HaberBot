@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,7 @@ type AuthHandler struct {
 	refreshUC         *usecase.AuthRefreshUseCase
 	logoutUC          *usecase.AuthLogoutUseCase
 	jwtRefreshTTLDays int
+	isProduction      bool // BUG-004: controls Secure flag on cookies
 }
 
 // NewAuthHandler creates a new AuthHandler.
@@ -23,6 +25,7 @@ func NewAuthHandler(
 	refreshUC *usecase.AuthRefreshUseCase,
 	logoutUC *usecase.AuthLogoutUseCase,
 	jwtRefreshTTLDays int,
+	isProduction bool,
 ) *AuthHandler {
 	return &AuthHandler{
 		registerUC:        registerUC,
@@ -30,6 +33,7 @@ func NewAuthHandler(
 		refreshUC:         refreshUC,
 		logoutUC:          logoutUC,
 		jwtRefreshTTLDays: jwtRefreshTTLDays,
+		isProduction:      isProduction,
 	}
 }
 
@@ -71,13 +75,13 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		})
 	}
 
-	// Set HttpOnly Refresh Cookie
+	// BUG-004: Secure flag is true in production (requires HTTPS), false only in development.
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    loginResp.RefreshToken,
 		Expires:  time.Now().AddDate(0, 0, h.jwtRefreshTTLDays),
 		HTTPOnly: true,
-		Secure:   false, // Set to true in production
+		Secure:   h.isProduction,
 		SameSite: "Lax",
 		Path:     "/",
 	})
@@ -103,12 +107,12 @@ func (h *AuthHandler) Refresh(c *fiber.Ctx) error {
 			Value:    "",
 			Expires:  time.Now().Add(-24 * time.Hour),
 			HTTPOnly: true,
-			Secure:   false,
+			Secure:   h.isProduction, // BUG-004
 			SameSite: "Lax",
 			Path:     "/",
 		})
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": err.Error(),
+			"error": "invalid or expired refresh token",
 		})
 	}
 
@@ -118,7 +122,7 @@ func (h *AuthHandler) Refresh(c *fiber.Ctx) error {
 		Value:    refreshResp.RefreshToken,
 		Expires:  time.Now().AddDate(0, 0, h.jwtRefreshTTLDays),
 		HTTPOnly: true,
-		Secure:   false,
+		Secure:   h.isProduction, // BUG-004
 		SameSite: "Lax",
 		Path:     "/",
 	})
@@ -131,23 +135,23 @@ func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 	// Read Refresh token to clear in DB
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
-		// Extract claims to find user sub ID (or clear it dynamically from claims if logged in)
-		// But clearing cookie is primary security action.
-		// For thoroughness, we also invalidate the token in HTTP context if verified.
 		if userClaims, ok := c.Locals("user").(fiber.Map); ok {
 			if userID, ok := userClaims["sub"].(string); ok {
-				_ = h.logoutUC.Execute(c.Context(), userID)
+				// BUG-015: Log logout errors instead of silently discarding them.
+				if err := h.logoutUC.Execute(c.Context(), userID); err != nil {
+					log.Printf("WARN: logout token invalidation failed for user %q: %v", userID, err)
+				}
 			}
 		}
 	}
 
-	// Invalidate HttpOnly Refresh Cookie
+	// BUG-004: Secure flag consistent with cookie creation.
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    "",
 		Expires:  time.Now().Add(-24 * time.Hour),
 		HTTPOnly: true,
-		Secure:   false,
+		Secure:   h.isProduction,
 		SameSite: "Lax",
 		Path:     "/",
 	})

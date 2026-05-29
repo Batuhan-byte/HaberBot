@@ -25,6 +25,7 @@ type Container struct {
 	TopicRepo   port.TopicRepository
 	UserRepo    port.UserRepository
 	CommentRepo port.CommentRepository
+	ProfileRepo port.ProfileRepository
 	Fetchers    []port.ContentFetcher
 	AIProcessor port.AIProcessor
 
@@ -45,6 +46,14 @@ type Container struct {
 	CreateCommentUC     *usecase.CreateCommentUseCase
 	ListCommentsUC      *usecase.ListCommentsUseCase
 
+	// Profile Use Cases
+	GetProfileUC        *usecase.GetProfileUseCase
+	UpdateProfileUC     *usecase.UpdateProfileUseCase
+	AddFavoriteUC       *usecase.AddFavoriteUseCase
+	RemoveFavoriteUC    *usecase.RemoveFavoriteUseCase
+	ListFavoritesUC     *usecase.ListFavoritesUseCase
+	ReportProfileUC     *usecase.ReportProfileUseCase
+
 	// Handlers
 	ArticleHandler *handler.ArticleHandler
 	TopicHandler   *handler.TopicHandler
@@ -52,6 +61,7 @@ type Container struct {
 	HealthHandler  *handler.HealthHandler
 	AuthHandler    *handler.AuthHandler
 	CommentHandler *handler.CommentHandler
+	ProfileHandler *handler.ProfileHandler
 
 	// Scheduler
 	Scheduler *scheduler.Scheduler
@@ -70,12 +80,12 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 	topicRepo := repository.NewPostgresTopicRepo(pool)
 	userRepo := repository.NewPostgresUserRepo(pool)
 	commentRepo := repository.NewPostgresCommentRepo(pool)
+	profileRepo := repository.NewPostgresProfileRepo(pool)
 
 	// 3. Gateways & Fetchers
 	hnFetcher := fetcher.NewHackerNewsFetcher()
 
 	// Default feeds for RSS fetcher.
-	// You can also add more standard tech feeds here.
 	defaultFeeds := []string{
 		"https://news.ycombinator.com/rss",
 		"https://dev.to/feed",
@@ -112,8 +122,16 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 	authRefreshUC := usecase.NewAuthRefreshUseCase(userRepo, cfg.JWTSecret, cfg.JWTAccessTTLMinutes, cfg.JWTRefreshTTLDays)
 	authLogoutUC := usecase.NewAuthLogoutUseCase(userRepo)
 
-	createCommentUC := usecase.NewCreateCommentUseCase(commentRepo, articleRepo)
+	createCommentUC := usecase.NewCreateCommentUseCase(commentRepo, articleRepo, profileRepo)
 	listCommentsUC := usecase.NewListCommentsUseCase(commentRepo)
+
+	// Profile Use Cases
+	getProfileUC := usecase.NewGetProfileUseCase(userRepo, profileRepo)
+	updateProfileUC := usecase.NewUpdateProfileUseCase(userRepo)
+	addFavoriteUC := usecase.NewAddFavoriteUseCase(profileRepo, userRepo)
+	removeFavoriteUC := usecase.NewRemoveFavoriteUseCase(profileRepo)
+	listFavoritesUC := usecase.NewListFavoritesUseCase(profileRepo)
+	reportProfileUC := usecase.NewReportProfileUseCase(profileRepo, userRepo)
 
 	// 5. Handlers
 	articleHandler := handler.NewArticleHandler(listArticlesUC, getArticleUC, searchArticlesUC, summarizeArticleUC, cfg.AdminAPIKey)
@@ -121,8 +139,9 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 	adminHandler := handler.NewAdminHandler(manageTopicsUC, manageArticlesUC, dailyPipelineUC, cfg.AdminAPIKey)
 	healthHandler := handler.NewHealthHandler()
 
-	authHandler := handler.NewAuthHandler(authRegisterUC, authLoginUC, authRefreshUC, authLogoutUC, cfg.JWTRefreshTTLDays)
+	authHandler := handler.NewAuthHandler(authRegisterUC, authLoginUC, authRefreshUC, authLogoutUC, cfg.JWTRefreshTTLDays, cfg.IsProduction)
 	commentHandler := handler.NewCommentHandler(createCommentUC, listCommentsUC)
+	profileHandler := handler.NewProfileHandler(getProfileUC, updateProfileUC, addFavoriteUC, removeFavoriteUC, listFavoritesUC, reportProfileUC)
 
 	// 6. Scheduler
 	cronScheduler := scheduler.NewScheduler(dailyPipelineUC)
@@ -134,6 +153,7 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 		TopicRepo:          topicRepo,
 		UserRepo:           userRepo,
 		CommentRepo:        commentRepo,
+		ProfileRepo:        profileRepo,
 		Fetchers:           fetchers,
 		AIProcessor:        aiProcessor,
 		FetchArticlesUC:    fetchArticlesUC,
@@ -151,12 +171,19 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 		AuthLogoutUC:       authLogoutUC,
 		CreateCommentUC:    createCommentUC,
 		ListCommentsUC:     listCommentsUC,
+		GetProfileUC:       getProfileUC,
+		UpdateProfileUC:    updateProfileUC,
+		AddFavoriteUC:      addFavoriteUC,
+		RemoveFavoriteUC:   removeFavoriteUC,
+		ListFavoritesUC:    listFavoritesUC,
+		ReportProfileUC:    reportProfileUC,
 		ArticleHandler:     articleHandler,
 		TopicHandler:       topicHandler,
 		AdminHandler:       adminHandler,
 		HealthHandler:      healthHandler,
 		AuthHandler:        authHandler,
 		CommentHandler:     commentHandler,
+		ProfileHandler:     profileHandler,
 		Scheduler:          cronScheduler,
 	}, nil
 }

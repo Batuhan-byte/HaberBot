@@ -28,7 +28,7 @@ type Article struct {
 	// TurkishContent is the AI-translated Turkish content.
 	TurkishContent string `json:"content_tr"`
 	// TurkishSummary is the AI-generated Turkish "hap bilgi" summary.
-	TurkishSummary string `json:"summary_tr"`
+	TurkishSummary string `json:"summary_tr,omitempty"`
 	// Score is the relevance or popularity score from the source.
 	Score int `json:"score"`
 	// TopicID references the topic this article belongs to.

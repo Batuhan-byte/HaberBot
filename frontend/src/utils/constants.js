@@ -34,3 +34,14 @@ export const QUERY_STALE_TIME = 5 * 60 * 1000;
 
 /** Query retry count */
 export const QUERY_RETRY_COUNT = 2;
+
+/** Helper to get full avatar URL hosted on the backend */
+export const getAvatarUrl = (path) => {
+  if (!path) return `${API_BASE_URL}/avatars/presets/preset-1.png`;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
+};
+

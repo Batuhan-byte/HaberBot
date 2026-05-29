@@ -1,3 +1,11 @@
-INSERT INTO users (id, username, password_hash, role)
-VALUES ('admin1-uuid-placeholder-1234567890ab', 'admin1', '$2a$10$6Wqf8hI7vR9Z6J1uXJgYGea7a8dG09R8a9A5S3g4M6iY7a4r8d3aK', 'Admin')
-ON CONFLICT (username) DO NOTHING;
+-- Migration 009 Seed Admin (SECURITY HARDENED)
+-- BUG-003: Hardcoded bcrypt hash removed from source code.
+-- Admin account is now created via the initialize-admin CLI tool or env-based seeding,
+-- NOT via a migration with an embedded password hash.
+--
+-- To create the initial admin account, run:
+--   cd backend && go run cmd/initialize_admin/main.go
+-- This reads ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL from environment variables.
+--
+-- This file intentionally left as a no-op to avoid re-executing old unsafe seed.
+SELECT 1; -- no-op placeholder

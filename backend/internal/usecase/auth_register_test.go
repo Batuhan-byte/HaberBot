@@ -137,4 +137,83 @@ func TestAuthRegisterUseCase_Execute(t *testing.T) {
 		assert.Error(t, err)
 		assert.Equal(t, "email is already registered", err.Error())
 	})
+
+	// BUG-013: Email format validation
+	t.Run("invalid email format rejected", func(t *testing.T) {
+		invalidEmails := []string{
+			"notanemail",
+			"missing@",
+			"@nodomain.com",
+			"<script>alert(1)</script>",
+			"user@",
+			"plaintext",
+			"user name@domain.com",
+		}
+		for _, email := range invalidEmails {
+			repo := &mockUserRepo{}
+			uc := NewAuthRegisterUseCase(repo)
+			_, err := uc.Execute(ctx, RegisterRequest{
+				Username: "testuser",
+				Email:    email,
+				Password: "securepassword123",
+			})
+			assert.Error(t, err, "expected error for email: %q", email)
+			assert.Equal(t, "email address format is invalid", err.Error(), "email: %q", email)
+		}
+	})
+
+	// BUG-014: Username character set validation
+	t.Run("invalid username characters rejected", func(t *testing.T) {
+		invalidUsernames := []string{
+			"<script>",
+			"admin' OR 1=1--",
+			"user name",
+			"user@domain",
+			"user!",
+			"admin\x00null",
+		}
+		for _, username := range invalidUsernames {
+			repo := &mockUserRepo{}
+			uc := NewAuthRegisterUseCase(repo)
+			_, err := uc.Execute(ctx, RegisterRequest{
+				Username: username,
+				Email:    "test@haberbot.com",
+				Password: "securepassword123",
+			})
+			assert.Error(t, err, "expected error for username: %q", username)
+			// Check it's either length or charset error
+			assert.True(t,
+				err.Error() == "username may only contain letters, digits, underscores and hyphens" ||
+					err.Error() == "username must be between 3 and 30 characters long",
+				"unexpected error for username %q: %v", username, err)
+		}
+	})
+
+	// BUG-014: Valid usernames should pass
+	t.Run("valid usernames accepted", func(t *testing.T) {
+		validUsernames := []string{
+			"john_doe",
+			"user-123",
+			"HaberBot",
+			"abc",
+			"test_user_2024",
+		}
+		for _, username := range validUsernames {
+			repo := &mockUserRepo{
+				findByUsernameFunc: func(_ context.Context, _ string) (*entity.User, error) { return nil, nil },
+				findByEmailFunc:    func(_ context.Context, _ string) (*entity.User, error) { return nil, nil },
+			}
+			uc := NewAuthRegisterUseCase(repo)
+			_, err := uc.Execute(ctx, RegisterRequest{
+				Username: username,
+				Email:    "test@haberbot.com",
+				Password: "securepassword123",
+			})
+			// Should not fail on username/email validation (DB save may succeed or not; no saveFunc set)
+			if err != nil {
+				assert.NotEqual(t, "username may only contain letters, digits, underscores and hyphens", err.Error(),
+					"valid username %q should not fail charset check", username)
+			}
+		}
+	})
 }

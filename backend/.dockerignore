@@ -1,0 +1,25 @@
+# BUG-033: Prevent sensitive files from being copied into Docker build context
+# Secrets and config
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Development artifacts
+scratch_hash.go
+*_test.go
+
+# Documentation and planning
+docs/
+*.md
+
+# Git and IDE
+.git/
+.github/
+.vscode/
+.idea/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

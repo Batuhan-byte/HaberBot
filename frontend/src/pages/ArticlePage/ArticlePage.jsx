@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import Header from '../../components/Header/Header';
+import ArticleSummaryLauncher from '../../components/ArticleSummaryLauncher/ArticleSummaryLauncher';
+import ArticleSummaryModal from '../../components/ArticleSummaryModal/ArticleSummaryModal';
+import DOMPurify from 'dompurify';
 
 function ArticlePageSkeleton() {
   return (
@@ -31,6 +34,7 @@ function ArticlePageSkeleton() {
 
 export default function ArticlePage() {
   const { id } = useParams();
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
   const { data: article, isLoading, error } = useQuery({
     queryKey: ['article', id],
@@ -48,18 +52,6 @@ export default function ArticlePage() {
     const topic = topicsList.find(t => t.id === topicId);
     return topic ? topic.name : 'Teknoloji';
   };
-
-  const queryClient = useQueryClient();
-  const summaryMutation = useMutation({
-    mutationFn: (articleId) => api.generateSummary(articleId),
-    onSuccess: (data) => {
-      // Update cache with the newly generated summary
-      queryClient.setQueryData(['article', id], (oldData) => ({
-        ...oldData,
-        summary_tr: data.summary,
-      }));
-    }
-  });
 
   if (isLoading) {
     return (
@@ -99,19 +91,6 @@ export default function ArticlePage() {
               <h1 id="article-title" className="font-headline-lg text-headline-lg text-primary mb-6 leading-tight">
                 {article.title_tr || article.title}
               </h1>
-              
-              {!article.summary_tr && (
-                <button
-                  onClick={() => summaryMutation.mutate(id)}
-                  disabled={summaryMutation.isPending}
-                  className="mb-6 px-6 py-3 bg-[#1A1A1C] hover:bg-[#252528] active:scale-95 transition-all text-primary font-bold rounded-full border border-primary/20 hover:border-primary/50 flex items-center gap-3 shadow-[0_0_15px_rgba(255,255,255,0.05)]"
-                >
-                  <span className={`material-symbols-outlined ${summaryMutation.isPending ? 'animate-spin' : ''}`}>
-                    {summaryMutation.isPending ? 'sync' : 'auto_awesome'}
-                  </span>
-                  <span>{summaryMutation.isPending ? 'Yapay Zeka Özetliyor...' : '✨ Yapay Zeka ile Özetle'}</span>
-                </button>
-              )}
               <div className="flex items-center justify-between border-y border-outline-variant py-4">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded bg-surface-container border border-outline-variant flex items-center justify-center">
@@ -153,38 +132,10 @@ export default function ArticlePage() {
             </div>
  
             <section className="news-content" aria-label="Haber İçeriği">
-              {(article.summary_tr || article.summary) && (
-                <div className="mb-8 p-6 bg-surface-container-low border border-outline-variant rounded-xl" role="region" aria-label="Yapay Zeka Özeti">
-                  <div className="flex items-center gap-2 mb-4 text-on-surface-variant font-label-md text-label-md">
-                    <span className="material-symbols-outlined text-primary scale-75" aria-hidden="true">auto_awesome</span>
-                    <span className="text-primary font-semibold tracking-wide">YAPAY ZEKA ÖZETİ</span>
-                  </div>
-                  <div className="font-body-lg text-body-lg leading-[1.8] text-on-surface animate-fade-in">
-                    <p className="font-semibold text-white/90">
-                      {article.summary_tr || article.summary}
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {summaryMutation.isPending && !article.summary_tr && (
-                <div className="mb-8 p-6 bg-surface-container-low border border-outline-variant rounded-xl animate-pulse">
-                  <div className="flex items-center gap-2 mb-4">
-                     <div className="w-5 h-5 rounded-full bg-primary/30"></div>
-                     <div className="h-4 w-32 bg-primary/20 rounded"></div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="h-4 w-full bg-neutral-800 rounded"></div>
-                    <div className="h-4 w-full bg-neutral-800 rounded"></div>
-                    <div className="h-4 w-3/4 bg-neutral-800 rounded"></div>
-                  </div>
-                </div>
-              )}
- 
               <div 
                 className="font-body-lg text-body-lg leading-[1.8] text-on-surface space-y-6"
                 dangerouslySetInnerHTML={{ 
-                  __html: article.content_tr || article.original_content || article.content || "<p>Haberin detayı henüz çekilmedi veya bulunmuyor.</p>" 
+                  __html: DOMPurify.sanitize(article.content_tr || article.original_content || article.content || "<p>Haberin detayı henüz çekilmedi veya bulunmuyor.</p>")
                 }}
               />
             </section>
@@ -237,6 +188,13 @@ export default function ArticlePage() {
           </div>
         </div>
       </footer>
+
+      <ArticleSummaryLauncher onClick={() => setIsSummaryOpen(true)} />
+      <ArticleSummaryModal 
+        articleId={id} 
+        open={isSummaryOpen} 
+        onClose={() => setIsSummaryOpen(false)} 
+      />
     </>
   );
 }

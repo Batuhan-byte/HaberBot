@@ -4,10 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
 	"haberbot/internal/domain/entity"
 	"haberbot/internal/domain/port"
+)
+
+// Validation patterns — compiled once at package init for performance.
+var (
+	// emailRegex is a practical RFC 5322 subset for email format validation.
+	emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+
+	// usernameRegex only allows letters, digits, underscores and hyphens (BUG-014).
+	// Prevents stored XSS, log injection, and spoofed admin-looking names.
+	usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9_\-]+$`)
 )
 
 // RegisterRequest defines the input payload for registering a new user.
@@ -29,12 +40,22 @@ func NewAuthRegisterUseCase(userRepo port.UserRepository) *AuthRegisterUseCase {
 
 // Execute registers a new user with standard User role.
 func (uc *AuthRegisterUseCase) Execute(ctx context.Context, req RegisterRequest) (*entity.User, error) {
-	if len(req.Username) < 3 {
-		return nil, errors.New("username must be at least 3 characters long")
+	// BUG-014: username must be 3-30 chars and contain only [a-zA-Z0-9_-]
+	if len(req.Username) < 3 || len(req.Username) > 30 {
+		return nil, errors.New("username must be between 3 and 30 characters long")
 	}
+	if !usernameRegex.MatchString(req.Username) {
+		return nil, errors.New("username may only contain letters, digits, underscores and hyphens")
+	}
+
+	// BUG-013: Validate email format with regex (not just empty check)
 	if req.Email == "" {
 		return nil, errors.New("email is required")
 	}
+	if !emailRegex.MatchString(req.Email) {
+		return nil, errors.New("email address format is invalid")
+	}
+
 	if len(req.Password) < 8 {
 		return nil, errors.New("password must be at least 8 characters long")
 	}

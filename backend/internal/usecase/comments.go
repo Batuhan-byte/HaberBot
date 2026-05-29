@@ -20,13 +20,19 @@ type CreateCommentRequest struct {
 type CreateCommentUseCase struct {
 	commentRepo port.CommentRepository
 	articleRepo port.ArticleRepository
+	profileRepo port.ProfileRepository
 }
 
 // NewCreateCommentUseCase creates a new CreateCommentUseCase.
-func NewCreateCommentUseCase(commentRepo port.CommentRepository, articleRepo port.ArticleRepository) *CreateCommentUseCase {
+func NewCreateCommentUseCase(
+	commentRepo port.CommentRepository,
+	articleRepo port.ArticleRepository,
+	profileRepo port.ProfileRepository,
+) *CreateCommentUseCase {
 	return &CreateCommentUseCase{
 		commentRepo: commentRepo,
 		articleRepo: articleRepo,
+		profileRepo: profileRepo,
 	}
 }
 
@@ -57,6 +63,9 @@ func (uc *CreateCommentUseCase) Execute(ctx context.Context, req CreateCommentRe
 	if err := uc.commentRepo.Save(ctx, comment); err != nil {
 		return nil, fmt.Errorf("saving comment: %w", err)
 	}
+
+	// Trigger recount of stats (Activity Count) in background/transactionally
+	_ = uc.profileRepo.RecountStats(ctx, req.UserID)
 
 	return comment, nil
 }

@@ -1593,3 +1593,169 @@ body.light-mode .article-card__tag {
 body.light-mode .article-card__footer {
   border-top-color: rgba(0, 0, 0, 0.04) !important;
 }
+
+/* ==========================================================================
+   Premium Hover User Menu & Pill Trigger (Midnight Neon Blue Glassmorphism)
+   ========================================================================== */
+.hb-user-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.hb-user-pill-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(13, 13, 13, 0.8) 100%); /* Gorgeous blueish dark glass */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 14px 6px 6px;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), 0 0 10px rgba(37, 99, 235, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2); /* Soft glowing blue border */
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.hb-user-pill-trigger:hover {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(20, 20, 20, 0.8) 100%);
+  border-color: rgba(59, 130, 246, 0.55); /* Highlighted brand blue border */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 18px rgba(59, 130, 246, 0.25); /* Vibrant glowing blue shadow */
+  transform: translateY(-2px);
+}
+
+.hb-pill-avatar-wrap {
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brand-blue); /* Brand blue avatar fallback background */
+  color: #ffffff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-decoration: none;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}
+
+.hb-pill-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hb-pill-avatar-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #ffffff;
+}
+
+.hb-pill-username {
+  color: var(--text-primary) !important;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 750;
+  letter-spacing: -0.2px;
+  text-transform: lowercase;
+}
+
+.hb-pill-arrow {
+  color: var(--accent-glow) !important; /* Bright glowing blue arrow */
+  font-size: 18px !important;
+  opacity: 0.9;
+  transition: transform 0.25s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hb-user-menu-wrapper:hover .hb-pill-arrow {
+  transform: rotate(180deg);
+}
+
+/* User Dropdown Menu container */
+.hb-user-hover-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 200px;
+  background: linear-gradient(135deg, rgba(8, 10, 18, 0.96) 0%, rgba(4, 5, 10, 0.98) 100%); /* Gorgeous dark blueish glass panel */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59, 130, 246, 0.18); /* Soft blue tinted border */
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(37, 99, 235, 0.08); /* Cyberpunk shadow glow */
+  padding: 6px;
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Keep dropdown open when hovering trigger or menu */
+.hb-user-menu-wrapper:hover .hb-user-hover-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Menu Items inside Dropdown */
+.hb-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted) !important;
+  text-align: left;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+}
+
+.hb-dropdown-menu-item:hover {
+  background-color: rgba(37, 99, 235, 0.08) !important; /* Premium blue hover */
+  color: var(--text-primary) !important;
+  border-left-color: var(--accent-glow); /* Glowing left blue indicator */
+}
+
+/* Divider Line */
+.hb-dropdown-divider {
+  height: 1px;
+  background-color: rgba(59, 130, 246, 0.1);
+  margin: 4px 6px;
+}
+
+/* Logout menu item styling */
+.hb-dropdown-menu-item.item-logout {
+  color: rgba(239, 68, 68, 0.9) !important; /* Soft red for warning actions */
+}
+
+.hb-dropdown-menu-item.item-logout:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #ef4444 !important;
+  border-left-color: #ef4444;
+}
+

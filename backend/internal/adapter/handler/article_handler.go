@@ -138,7 +138,12 @@ func (h *ArticleHandler) GetArticleByID(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(article)
+	// Exclude summary text by default from the article detail response.
+	// Users will retrieve it lazily via the GET /articles/:id/summary endpoint.
+	responseArticle := *article
+	responseArticle.TurkishSummary = ""
+
+	return c.JSON(responseArticle)
 }
 
 // SummarizeArticle handles POST /api/v1/articles/:id/summary
@@ -158,6 +163,7 @@ func (h *ArticleHandler) SummarizeArticle(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"summary": summary,
+		"summary":    summary,
+		"article_id": id,
 	})
 }

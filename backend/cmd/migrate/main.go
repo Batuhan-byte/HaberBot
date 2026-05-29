@@ -4,10 +4,29 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 )
+
+func execSQL(ctx context.Context, conn *pgx.Conn, filepath string) {
+	sql, err := os.ReadFile(filepath)
+	if err != nil {
+		log.Fatalf("Failed to read migration file %s: %v", filepath, err)
+	}
+
+	_, err = conn.Exec(ctx, string(sql))
+	if err != nil {
+		errStr := err.Error()
+		if strings.Contains(errStr, "already exists") || strings.Contains(errStr, "duplicate key") || strings.Contains(errStr, "already a member") {
+			log.Printf("[Skipped] %s: already executed (resource exists)\n", filepath)
+			return
+		}
+		log.Fatalf("Failed to execute migration %s: %v", filepath, err)
+	}
+	log.Printf("[Executed] %s\n", filepath)
+}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -26,104 +45,25 @@ func main() {
 	}
 	defer conn.Close(ctx)
 
-	// Read and execute 001
-	sql1, err := os.ReadFile("migrations/001_create_topics.up.sql")
-	if err != nil {
-		log.Fatal(err)
+	// List of all migrations in order
+	migrations := []string{
+		"migrations/001_create_topics.up.sql",
+		"migrations/002_create_articles.up.sql",
+		"migrations/003_add_turkish_content.up.sql",
+		"migrations/004_add_approval_and_hiding.up.sql",
+		"migrations/005_add_approved_at.up.sql",
+		"migrations/006_make_topic_id_nullable.up.sql",
+		"migrations/007_create_users.up.sql",
+		"migrations/008_create_comments.up.sql",
+		"migrations/009_seed_admin.up.sql",
+		"migrations/010_add_email_to_users.up.sql",
+		"migrations/011_create_user_profiles.up.sql",
+		"migrations/012_security_constraints.up.sql",
 	}
-	_, err = conn.Exec(ctx, string(sql1))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 001_create_topics.up.sql")
 
-	// Read and execute 002
-	sql2, err := os.ReadFile("migrations/002_create_articles.up.sql")
-	if err != nil {
-		log.Fatal(err)
+	for _, m := range migrations {
+		execSQL(ctx, conn, m)
 	}
-	_, err = conn.Exec(ctx, string(sql2))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 002_create_articles.up.sql")
 
-	// Read and execute 003
-	sql3, err := os.ReadFile("migrations/003_add_turkish_content.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql3))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 003_add_turkish_content.up.sql")
-
-	// Read and execute 004
-	sql4, err := os.ReadFile("migrations/004_add_approval_and_hiding.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql4))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 004_add_approval_and_hiding.up.sql")
-
-	// Read and execute 005
-	sql5, err := os.ReadFile("migrations/005_add_approved_at.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql5))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 005_add_approved_at.up.sql")
-
-	// Read and execute 006
-	sql6, err := os.ReadFile("migrations/006_make_topic_id_nullable.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql6))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 006_make_topic_id_nullable.up.sql")
-
-	// Read and execute 007
-	sql7, err := os.ReadFile("migrations/007_create_users.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql7))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 007_create_users.up.sql")
-
-	// Read and execute 008
-	sql8, err := os.ReadFile("migrations/008_create_comments.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql8))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 008_create_comments.up.sql")
-
-	// Read and execute 009
-	sql9, err := os.ReadFile("migrations/009_seed_admin.up.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = conn.Exec(ctx, string(sql9))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Executed 009_seed_admin.up.sql")
-
-	log.Println("All migrations executed successfully.")
+	log.Println("All migrations processed successfully.")
 }

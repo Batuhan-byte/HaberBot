@@ -2,10 +2,11 @@ import { API_BASE_URL as CONST_BASE_URL, API_PREFIX, DEFAULT_LIMIT } from '../ut
 
 const API_BASE_URL = `${CONST_BASE_URL}${API_PREFIX}`;
 
-function getHeaders(isAdmin = false) {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+function getHeaders(isAdmin = false, isMultipart = false) {
+  const headers = {};
+  if (!isMultipart) {
+    headers['Content-Type'] = 'application/json';
+  }
   const token = localStorage.getItem('access_token');
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -63,6 +64,15 @@ export async function generateSummary(id) {
     headers: getHeaders(false),
   });
   if (!response.ok) throw new Error('Failed to generate summary');
+  return response.json();
+}
+
+export async function getArticleSummary(id) {
+  const response = await fetch(`${API_BASE_URL}/articles/${id}/summary`, {
+    method: 'GET',
+    headers: getHeaders(false),
+  });
+  if (!response.ok) throw new Error('Failed to fetch summary');
   return response.json();
 }
 
@@ -254,6 +264,79 @@ export async function createComment(articleId, content) {
   return response.json();
 }
 
+// Profile API Calls
+export async function fetchUserProfile(username) {
+  const response = await fetch(`${API_BASE_URL}/users/${username}`, {
+    headers: getHeaders(false),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Profil yüklenemedi.');
+  }
+  return response.json();
+}
+
+export async function updateUserProfile(formData) {
+  const response = await fetch(`${API_BASE_URL}/users/profile`, {
+    method: 'PUT',
+    headers: getHeaders(false, true), // isMultipart = true
+    body: formData,
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Profil güncellenemedi.');
+  }
+  return response.json();
+}
+
+export async function addFavorite(favoriteUserId) {
+  const response = await fetch(`${API_BASE_URL}/users/${favoriteUserId}/favorites`, {
+    method: 'POST',
+    headers: getHeaders(false),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Favoriye eklenemedi.');
+  }
+  return response.json();
+}
+
+export async function removeFavorite(favoriteUserId) {
+  const response = await fetch(`${API_BASE_URL}/users/${favoriteUserId}/favorites`, {
+    method: 'DELETE',
+    headers: getHeaders(false),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Favorilerden çıkarılamadı.');
+  }
+  return response;
+}
+
+export async function fetchFavorites(page = 1, limit = 20) {
+  const response = await fetch(`${API_BASE_URL}/users/me/favorites?page=${page}&limit=${limit}`, {
+    headers: getHeaders(false),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Favoriler yüklenemedi.');
+  }
+  return response.json();
+}
+
+export async function reportProfile(reportedUserId, reason, comment) {
+  const response = await fetch(`${API_BASE_URL}/profile-reports`, {
+    method: 'POST',
+    headers: getHeaders(false),
+    body: JSON.stringify({ reported_user_id: reportedUserId, reason, comment }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Şikayet iletilemedi.');
+  }
+  return response.json();
+}
+
 export const api = {
   getArticles: fetchArticles,
   getArticle: fetchArticle,
@@ -261,6 +344,7 @@ export const api = {
   getTopicArticles: fetchTopicArticles,
   searchArticles: searchArticles,
   generateSummary: generateSummary,
+  getArticleSummary: getArticleSummary,
   createTopic: createTopic,
   updateTopic: updateTopic,
   deleteTopic: deleteTopic,
@@ -274,4 +358,11 @@ export const api = {
   logout,
   getComments: fetchComments,
   createComment,
+  fetchUserProfile,
+  updateUserProfile,
+  addFavorite,
+  removeFavorite,
+  fetchFavorites,
+  reportProfile,
 };
+

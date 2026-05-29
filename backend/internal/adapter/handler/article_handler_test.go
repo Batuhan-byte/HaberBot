@@ -220,6 +220,34 @@ func TestArticleHandler_GetArticleByID(t *testing.T) {
 		resp, _ := app.Test(req)
 		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	})
+
+	t.Run("lean payload omits summary", func(t *testing.T) {
+		repo := &mockArticleRepo{
+			findByIDFunc: func(_ context.Context, id string) (*entity.Article, error) {
+				return &entity.Article{
+					ID:             "1",
+					Title:          "Test",
+					TurkishSummary: "Bu özet geri dönmemeli",
+					IsApproved:     true,
+				}, nil
+			},
+		}
+		getUC := usecase.NewGetArticleUseCase(repo)
+		h := NewArticleHandler(nil, getUC, nil, nil, "")
+
+		app := fiber.New()
+		app.Get("/articles/:id", h.GetArticleByID)
+		req := httptest.NewRequest(http.MethodGet, "/articles/1", nil)
+		resp, _ := app.Test(req)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+
+		body, _ := io.ReadAll(resp.Body)
+		var result map[string]interface{}
+		json.Unmarshal(body, &result)
+		
+		_, exists := result["summary_tr"]
+		assert.False(t, exists, "TurkishSummary should not be serialized in standard article detail response")
+	})
 }
 
 func TestArticleHandler_SummarizeArticle(t *testing.T) {

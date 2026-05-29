@@ -134,12 +134,24 @@ Plans:
 **Goal:** Kullanıcı profil sayfası, profil düzenleme (bio + avatar), favorilere ekleme ve profil raporlama sistemini devreye almak.
 **Depends on:** Phase 7 (Auth & Role Management)
 **Requirements**: PROF-01, PROF-02, PROF-03, PROF-04, PROF-05, PROF-06, PROF-07, PROF-08, PROF-09
+**Status:** Completed
+**Plans:** 1 plan
+
+Plans:
+
+- [x] 08-01: Kullanıcı Profil Sayfası, Avatar Yönetimi, Favoriler ve Raporlama Sistemi (18 görevli kapsamlı uygulama planı)
+
+### Phase 9: Smart TL;DR & AI Summary Redesign
+
+**Goal:** Haber detayından gömülü AI özeti kaldırıp sticky CTA + premium modal akışıyla lazy-loaded, markdown-safe özet deneyimi sunmak.
+**Depends on:** Phase 8 (User Profile)
+**Requirements**: SUM-01, SUM-02, SUM-03, SUM-04, SUM-05
 **Status:** Planning
 **Plans:** 1 plan
 
 Plans:
 
-- [ ] 08-01: Kullanıcı Profil Sayfası, Avatar Yönetimi, Favoriler ve Raporlama Sistemi (18 görevli kapsamlı uygulama planı)
+- [ ] 09-01: Sticky AI Summary CTA, Modal, Markdown Render ve Lazy Summary Endpoint Entegrasyonu
 
 ---
 
@@ -154,5 +166,5 @@ Plans:
 | 5. Kategorisel Akışlar | 1/1 | Completed | 2026-05-29 |
 | 6. Pending queue limit | 0/0 | Closed | 2026-05-29 |
 | 7. Auth & Role Management | 1/1 | Completed | 2026-05-29 |
-| 8. User Profile | 0/1 | Planning | — |
-
+| 8. User Profile | 1/1 | Completed | 2026-05-29 |
+| 9. Smart TL;DR & AI Summary | 0/1 | Planning | — |
