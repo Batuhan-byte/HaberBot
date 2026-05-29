@@ -39,3 +39,10 @@ graphify-out/
 .agents/
 .agent/
 skills-lock.json
+
+# Markdown & Documentation
+*.md
+**/*.md
+.planning/
+docs/
+
