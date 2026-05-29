@@ -10,10 +10,11 @@ import (
 
 // ArticleHandler handles HTTP requests related to articles.
 type ArticleHandler struct {
-	listArticlesUC   *usecase.ListArticlesUseCase
-	getArticleUC     *usecase.GetArticleUseCase
-	searchArticlesUC *usecase.SearchArticlesUseCase
+	listArticlesUC     *usecase.ListArticlesUseCase
+	getArticleUC       *usecase.GetArticleUseCase
+	searchArticlesUC   *usecase.SearchArticlesUseCase
 	summarizeArticleUC *usecase.SummarizeArticleUseCase
+	adminAPIKey        string
 }
 
 // NewArticleHandler creates a new ArticleHandler.
@@ -22,12 +23,14 @@ func NewArticleHandler(
 	getArticleUC *usecase.GetArticleUseCase,
 	searchArticlesUC *usecase.SearchArticlesUseCase,
 	summarizeArticleUC *usecase.SummarizeArticleUseCase,
+	adminAPIKey string,
 ) *ArticleHandler {
 	return &ArticleHandler{
 		listArticlesUC:     listArticlesUC,
 		getArticleUC:       getArticleUC,
 		searchArticlesUC:   searchArticlesUC,
 		summarizeArticleUC: summarizeArticleUC,
+		adminAPIKey:        adminAPIKey,
 	}
 }
 
@@ -119,6 +122,17 @@ func (h *ArticleHandler) GetArticleByID(c *fiber.Ctx) error {
 	}
 
 	if article == nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "article not found",
+		})
+	}
+
+	// Admin authorization check
+	adminKey := c.Get("X-Admin-API-Key")
+	isAdmin := adminKey != "" && adminKey == h.adminAPIKey
+
+	// If the article is hidden or unapproved, only allow the admin to view it (otherwise return 404)
+	if (!article.IsApproved || article.IsHidden) && !isAdmin {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "article not found",
 		})

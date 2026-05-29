@@ -20,7 +20,7 @@ import (
 
 func TestAdminHandler_AuthMiddleware(t *testing.T) {
 	t.Run("valid key passes", func(t *testing.T) {
-		h := NewAdminHandler(nil, nil, "secret-key")
+		h := NewAdminHandler(nil, nil, nil, "secret-key")
 		app := fiber.New()
 		adminGroup := app.Group("/admin")
 		adminGroup.Use(h.AuthMiddleware())
@@ -35,7 +35,7 @@ func TestAdminHandler_AuthMiddleware(t *testing.T) {
 	})
 
 	t.Run("missing key returns 401", func(t *testing.T) {
-		h := NewAdminHandler(nil, nil, "secret-key")
+		h := NewAdminHandler(nil, nil, nil, "secret-key")
 		app := fiber.New()
 		adminGroup := app.Group("/admin")
 		adminGroup.Use(h.AuthMiddleware())
@@ -49,7 +49,7 @@ func TestAdminHandler_AuthMiddleware(t *testing.T) {
 	})
 
 	t.Run("wrong key returns 401", func(t *testing.T) {
-		h := NewAdminHandler(nil, nil, "secret-key")
+		h := NewAdminHandler(nil, nil, nil, "secret-key")
 		app := fiber.New()
 		adminGroup := app.Group("/admin")
 		adminGroup.Use(h.AuthMiddleware())
@@ -73,7 +73,7 @@ func TestAdminHandler_CreateTopic(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 
 		app := fiber.New()
 		app.Post("/admin/topics", h.CreateTopic)
@@ -88,7 +88,7 @@ func TestAdminHandler_CreateTopic(t *testing.T) {
 	t.Run("missing name returns 400", func(t *testing.T) {
 		repo := &mockTopicRepo{}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Post("/admin/topics", h.CreateTopic)
 
@@ -100,7 +100,7 @@ func TestAdminHandler_CreateTopic(t *testing.T) {
 	})
 
 	t.Run("invalid JSON returns 400", func(t *testing.T) {
-		h := NewAdminHandler(usecase.NewManageTopicsUseCase(&mockTopicRepo{}), nil, "key")
+		h := NewAdminHandler(usecase.NewManageTopicsUseCase(&mockTopicRepo{}), nil, nil, "key")
 		app := fiber.New()
 		app.Post("/admin/topics", h.CreateTopic)
 
@@ -117,7 +117,7 @@ func TestAdminHandler_CreateTopic(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Post("/admin/topics", h.CreateTopic)
 
@@ -139,7 +139,7 @@ func TestAdminHandler_UpdateTopic(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Put("/admin/topics/:id", h.UpdateTopic)
 
@@ -153,7 +153,7 @@ func TestAdminHandler_UpdateTopic(t *testing.T) {
 	t.Run("missing id returns 400", func(t *testing.T) {
 		repo := &mockTopicRepo{}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Put("/admin/topics/:id", h.UpdateTopic)
 
@@ -174,7 +174,7 @@ func TestAdminHandler_DeleteTopic(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Delete("/admin/topics/:id", h.DeleteTopic)
 
@@ -195,7 +195,7 @@ func TestAdminHandler_DeleteTopic(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(repo)
-		h := NewAdminHandler(manageUC, nil, "key")
+		h := NewAdminHandler(manageUC, nil, nil, "key")
 		app := fiber.New()
 		app.Delete("/admin/topics/:id", h.DeleteTopic)
 
@@ -210,11 +210,12 @@ func TestAdminHandler_TriggerFetch(t *testing.T) {
 		fetchUC := usecase.NewFetchArticlesUseCase(
 			[]port.ContentFetcher{&mockContentFetcher{
 				sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceHackerNews },
-				fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+				fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 					return nil, nil
 				},
 			}},
 			&mockArticleRepo{},
+			50,
 		)
 		processUC := usecase.NewProcessArticlesUseCase(&mockAIProcessor{}, &mockArticleRepo{})
 		topicRepo := &mockTopicRepo{
@@ -224,7 +225,7 @@ func TestAdminHandler_TriggerFetch(t *testing.T) {
 		}
 		manageUC := usecase.NewManageTopicsUseCase(topicRepo)
 		pipelineUC := usecase.NewDailyPipelineUseCase(fetchUC, processUC, manageUC)
-		h := NewAdminHandler(manageUC, pipelineUC, "key")
+		h := NewAdminHandler(manageUC, nil, pipelineUC, "key")
 
 		app := fiber.New()
 		app.Post("/admin/fetch", h.TriggerFetch)
@@ -240,10 +241,10 @@ func TestAdminHandler_TriggerFetch(t *testing.T) {
 			},
 		}
 		manageUC := usecase.NewManageTopicsUseCase(topicRepo)
-		fetchUC := usecase.NewFetchArticlesUseCase([]port.ContentFetcher{&mockContentFetcher{}}, &mockArticleRepo{})
+		fetchUC := usecase.NewFetchArticlesUseCase([]port.ContentFetcher{&mockContentFetcher{}}, &mockArticleRepo{}, 50)
 		processUC := usecase.NewProcessArticlesUseCase(&mockAIProcessor{}, &mockArticleRepo{})
 		pipelineUC := usecase.NewDailyPipelineUseCase(fetchUC, processUC, manageUC)
-		h := NewAdminHandler(manageUC, pipelineUC, "key")
+		h := NewAdminHandler(manageUC, nil, pipelineUC, "key")
 		app := fiber.New()
 		app.Post("/admin/fetch", h.TriggerFetch)
 		req := httptest.NewRequest(http.MethodPost, "/admin/fetch", nil)

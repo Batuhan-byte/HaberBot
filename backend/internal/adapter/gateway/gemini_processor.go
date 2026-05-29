@@ -72,6 +72,38 @@ func (p *GeminiProcessor) Summarize(ctx context.Context, content string) (string
 	return summary, nil
 }
 
+func (p *GeminiProcessor) TranslateAndSummarize(ctx context.Context, title, content string) (string, string, string, error) {
+	client, err := genai.NewClient(ctx, option.WithAPIKey(p.apiKey))
+	if err != nil {
+		return "", "", "", fmt.Errorf("creating gemini client: %w", err)
+	}
+	defer client.Close()
+
+	prompt := fmt.Sprintf(translateAndSummarizePromptTemplate, title, truncateContent(content))
+	response, err := p.generateContent(ctx, client, prompt)
+	if err != nil {
+		return "", "", "", err
+	}
+
+	turkishTitle := extractField(response, "BASLIK:")
+	if turkishTitle == "" {
+		turkishTitle = extractField(response, "TITLE:") 
+	}
+
+	turkishContent := extractFieldBetween(response, "METIN:", "OZET:")
+	if turkishContent == "" {
+		turkishContent = extractFieldMultiLine(response, "METIN:")
+	}
+	if turkishContent == "" {
+		turkishContent = response // Fallback: just return everything if format fails
+	}
+
+	turkishSummary := extractFieldMultiLine(response, "OZET:")
+
+	return turkishTitle, turkishContent, turkishSummary, nil
+}
+
+
 func (p *GeminiProcessor) generateContent(ctx context.Context, client *genai.Client, prompt string) (string, error) {
 	model := client.GenerativeModel(geminiModelName)
 	temperature := float32(geminiTemperature)

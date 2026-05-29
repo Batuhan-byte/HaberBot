@@ -26,7 +26,7 @@ func TestArticleHandler_GetRecentArticles(t *testing.T) {
 			},
 		}
 		listUC := usecase.NewListArticlesUseCase(repo)
-		h := NewArticleHandler(listUC, nil, nil, nil)
+		h := NewArticleHandler(listUC, nil, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles", h.GetRecentArticles)
@@ -49,7 +49,7 @@ func TestArticleHandler_GetRecentArticles(t *testing.T) {
 			},
 		}
 		listUC := usecase.NewListArticlesUseCase(repo)
-		h := NewArticleHandler(listUC, nil, nil, nil)
+		h := NewArticleHandler(listUC, nil, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles", h.GetRecentArticles)
@@ -67,7 +67,7 @@ func TestArticleHandler_GetRecentArticles(t *testing.T) {
 			},
 		}
 		listUC := usecase.NewListArticlesUseCase(repo)
-		h := NewArticleHandler(listUC, nil, nil, nil)
+		h := NewArticleHandler(listUC, nil, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles", h.GetRecentArticles)
@@ -84,7 +84,7 @@ func TestArticleHandler_GetRecentArticles(t *testing.T) {
 			},
 		}
 		listUC := usecase.NewListArticlesUseCase(repo)
-		h := NewArticleHandler(listUC, nil, nil, nil)
+		h := NewArticleHandler(listUC, nil, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles", h.GetRecentArticles)
@@ -103,7 +103,7 @@ func TestArticleHandler_SearchArticles(t *testing.T) {
 			},
 		}
 		searchUC := usecase.NewSearchArticlesUseCase(repo)
-		h := NewArticleHandler(nil, nil, searchUC, nil)
+		h := NewArticleHandler(nil, nil, searchUC, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/search", h.SearchArticles)
@@ -126,7 +126,7 @@ func TestArticleHandler_SearchArticles(t *testing.T) {
 			},
 		}
 		searchUC := usecase.NewSearchArticlesUseCase(repo)
-		h := NewArticleHandler(nil, nil, searchUC, nil)
+		h := NewArticleHandler(nil, nil, searchUC, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/search", h.SearchArticles)
@@ -144,7 +144,7 @@ func TestArticleHandler_SearchArticles(t *testing.T) {
 		}
 		searchUC := usecase.NewSearchArticlesUseCase(repo)
 		listUC := usecase.NewListArticlesUseCase(repo)
-		h := NewArticleHandler(listUC, nil, searchUC, nil)
+		h := NewArticleHandler(listUC, nil, searchUC, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/search", h.SearchArticles)
@@ -161,7 +161,7 @@ func TestArticleHandler_SearchArticles(t *testing.T) {
 			},
 		}
 		searchUC := usecase.NewSearchArticlesUseCase(repo)
-		h := NewArticleHandler(nil, nil, searchUC, nil)
+		h := NewArticleHandler(nil, nil, searchUC, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/search", h.SearchArticles)
@@ -176,11 +176,11 @@ func TestArticleHandler_GetArticleByID(t *testing.T) {
 		repo := &mockArticleRepo{
 			findByIDFunc: func(_ context.Context, id string) (*entity.Article, error) {
 				assert.Equal(t, "1", id)
-				return &entity.Article{ID: "1", Title: "Test"}, nil
+				return &entity.Article{ID: "1", Title: "Test", IsApproved: true}, nil
 			},
 		}
 		getUC := usecase.NewGetArticleUseCase(repo)
-		h := NewArticleHandler(nil, getUC, nil, nil)
+		h := NewArticleHandler(nil, getUC, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/:id", h.GetArticleByID)
@@ -196,7 +196,7 @@ func TestArticleHandler_GetArticleByID(t *testing.T) {
 			},
 		}
 		getUC := usecase.NewGetArticleUseCase(repo)
-		h := NewArticleHandler(nil, getUC, nil, nil)
+		h := NewArticleHandler(nil, getUC, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/:id", h.GetArticleByID)
@@ -212,7 +212,7 @@ func TestArticleHandler_GetArticleByID(t *testing.T) {
 			},
 		}
 		getUC := usecase.NewGetArticleUseCase(repo)
-		h := NewArticleHandler(nil, getUC, nil, nil)
+		h := NewArticleHandler(nil, getUC, nil, nil, "")
 
 		app := fiber.New()
 		app.Get("/articles/:id", h.GetArticleByID)
@@ -224,7 +224,7 @@ func TestArticleHandler_GetArticleByID(t *testing.T) {
 
 func TestArticleHandler_SummarizeArticle(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		article := &entity.Article{ID: "1", Title: "Test", TurkishContent: "İçerik"}
+		article := &entity.Article{ID: "1", Title: "Test", TurkishContent: "İçerik", IsApproved: true}
 		repo := &mockArticleRepo{
 			findByIDFunc: func(_ context.Context, id string) (*entity.Article, error) {
 				return article, nil
@@ -237,7 +237,7 @@ func TestArticleHandler_SummarizeArticle(t *testing.T) {
 			},
 		}
 		sumUC := usecase.NewSummarizeArticleUseCase(ai, repo)
-		h := NewArticleHandler(nil, nil, nil, sumUC)
+		h := NewArticleHandler(nil, nil, nil, sumUC, "")
 
 		app := fiber.New()
 		app.Post("/articles/:id/summary", h.SummarizeArticle)
@@ -258,7 +258,7 @@ func TestArticleHandler_SummarizeArticle(t *testing.T) {
 			},
 		}
 		sumUC := usecase.NewSummarizeArticleUseCase(&mockAIProcessor{}, repo)
-		h := NewArticleHandler(nil, nil, nil, sumUC)
+		h := NewArticleHandler(nil, nil, nil, sumUC, "")
 
 		app := fiber.New()
 		app.Post("/articles/:id/summary", h.SummarizeArticle)

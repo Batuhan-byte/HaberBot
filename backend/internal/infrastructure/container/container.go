@@ -23,6 +23,8 @@ type Container struct {
 	DBPool      *pgxpool.Pool
 	ArticleRepo port.ArticleRepository
 	TopicRepo   port.TopicRepository
+	UserRepo    port.UserRepository
+	CommentRepo port.CommentRepository
 	Fetchers    []port.ContentFetcher
 	AIProcessor port.AIProcessor
 
@@ -32,15 +34,24 @@ type Container struct {
 	ListArticlesUC      *usecase.ListArticlesUseCase
 	GetArticleUC        *usecase.GetArticleUseCase
 	ManageTopicsUC      *usecase.ManageTopicsUseCase
+	ManageArticlesUC    *usecase.ManageArticlesUseCase
 	DailyPipelineUC     *usecase.DailyPipelineUseCase
 	SearchArticlesUC    *usecase.SearchArticlesUseCase
 	SummarizeArticleUC  *usecase.SummarizeArticleUseCase
+	AuthRegisterUC      *usecase.AuthRegisterUseCase
+	AuthLoginUC         *usecase.AuthLoginUseCase
+	AuthRefreshUC       *usecase.AuthRefreshUseCase
+	AuthLogoutUC        *usecase.AuthLogoutUseCase
+	CreateCommentUC     *usecase.CreateCommentUseCase
+	ListCommentsUC      *usecase.ListCommentsUseCase
 
 	// Handlers
 	ArticleHandler *handler.ArticleHandler
 	TopicHandler   *handler.TopicHandler
 	AdminHandler   *handler.AdminHandler
 	HealthHandler  *handler.HealthHandler
+	AuthHandler    *handler.AuthHandler
+	CommentHandler *handler.CommentHandler
 
 	// Scheduler
 	Scheduler *scheduler.Scheduler
@@ -57,6 +68,8 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 	// 2. Repositories
 	articleRepo := repository.NewPostgresArticleRepo(pool)
 	topicRepo := repository.NewPostgresTopicRepo(pool)
+	userRepo := repository.NewPostgresUserRepo(pool)
+	commentRepo := repository.NewPostgresCommentRepo(pool)
 
 	// 3. Gateways & Fetchers
 	hnFetcher := fetcher.NewHackerNewsFetcher()
@@ -84,43 +97,66 @@ func NewContainer(ctx context.Context, cfg config.Config) (*Container, error) {
 	}
 
 	// 4. Use Cases
-	fetchArticlesUC := usecase.NewFetchArticlesUseCase(fetchers, articleRepo)
+	fetchArticlesUC := usecase.NewFetchArticlesUseCase(fetchers, articleRepo, cfg.PendingLimitPerTopic)
 	processArticlesUC := usecase.NewProcessArticlesUseCase(aiProcessor, articleRepo)
 	listArticlesUC := usecase.NewListArticlesUseCase(articleRepo)
 	getArticleUC := usecase.NewGetArticleUseCase(articleRepo)
 	manageTopicsUC := usecase.NewManageTopicsUseCase(topicRepo)
+	manageArticlesUC := usecase.NewManageArticlesUseCase(articleRepo)
 	dailyPipelineUC := usecase.NewDailyPipelineUseCase(fetchArticlesUC, processArticlesUC, manageTopicsUC)
 	searchArticlesUC := usecase.NewSearchArticlesUseCase(articleRepo)
 	summarizeArticleUC := usecase.NewSummarizeArticleUseCase(aiProcessor, articleRepo)
 
+	authRegisterUC := usecase.NewAuthRegisterUseCase(userRepo)
+	authLoginUC := usecase.NewAuthLoginUseCase(userRepo, cfg.JWTSecret, cfg.JWTAccessTTLMinutes, cfg.JWTRefreshTTLDays)
+	authRefreshUC := usecase.NewAuthRefreshUseCase(userRepo, cfg.JWTSecret, cfg.JWTAccessTTLMinutes, cfg.JWTRefreshTTLDays)
+	authLogoutUC := usecase.NewAuthLogoutUseCase(userRepo)
+
+	createCommentUC := usecase.NewCreateCommentUseCase(commentRepo, articleRepo)
+	listCommentsUC := usecase.NewListCommentsUseCase(commentRepo)
+
 	// 5. Handlers
-	articleHandler := handler.NewArticleHandler(listArticlesUC, getArticleUC, searchArticlesUC, summarizeArticleUC)
+	articleHandler := handler.NewArticleHandler(listArticlesUC, getArticleUC, searchArticlesUC, summarizeArticleUC, cfg.AdminAPIKey)
 	topicHandler := handler.NewTopicHandler(manageTopicsUC, listArticlesUC)
-	adminHandler := handler.NewAdminHandler(manageTopicsUC, dailyPipelineUC, cfg.AdminAPIKey)
+	adminHandler := handler.NewAdminHandler(manageTopicsUC, manageArticlesUC, dailyPipelineUC, cfg.AdminAPIKey)
 	healthHandler := handler.NewHealthHandler()
+
+	authHandler := handler.NewAuthHandler(authRegisterUC, authLoginUC, authRefreshUC, authLogoutUC, cfg.JWTRefreshTTLDays)
+	commentHandler := handler.NewCommentHandler(createCommentUC, listCommentsUC)
 
 	// 6. Scheduler
 	cronScheduler := scheduler.NewScheduler(dailyPipelineUC)
 
 	return &Container{
-		Config:            cfg,
-		DBPool:            pool,
-		ArticleRepo:       articleRepo,
-		TopicRepo:         topicRepo,
-		Fetchers:          fetchers,
-		AIProcessor:       aiProcessor,
-		FetchArticlesUC:   fetchArticlesUC,
-		ProcessArticlesUC: processArticlesUC,
-		ListArticlesUC:    listArticlesUC,
-		GetArticleUC:      getArticleUC,
-		ManageTopicsUC:    manageTopicsUC,
-		DailyPipelineUC:   dailyPipelineUC,
-		SearchArticlesUC:  searchArticlesUC,
+		Config:             cfg,
+		DBPool:             pool,
+		ArticleRepo:        articleRepo,
+		TopicRepo:          topicRepo,
+		UserRepo:           userRepo,
+		CommentRepo:        commentRepo,
+		Fetchers:           fetchers,
+		AIProcessor:        aiProcessor,
+		FetchArticlesUC:    fetchArticlesUC,
+		ProcessArticlesUC:  processArticlesUC,
+		ListArticlesUC:     listArticlesUC,
+		GetArticleUC:       getArticleUC,
+		ManageTopicsUC:     manageTopicsUC,
+		ManageArticlesUC:   manageArticlesUC,
+		DailyPipelineUC:    dailyPipelineUC,
+		SearchArticlesUC:   searchArticlesUC,
 		SummarizeArticleUC: summarizeArticleUC,
-		ArticleHandler:    articleHandler,
-		TopicHandler:      topicHandler,
-		AdminHandler:      adminHandler,
-		HealthHandler:     healthHandler,
-		Scheduler:         cronScheduler,
+		AuthRegisterUC:     authRegisterUC,
+		AuthLoginUC:        authLoginUC,
+		AuthRefreshUC:      authRefreshUC,
+		AuthLogoutUC:       authLogoutUC,
+		CreateCommentUC:    createCommentUC,
+		ListCommentsUC:     listCommentsUC,
+		ArticleHandler:     articleHandler,
+		TopicHandler:       topicHandler,
+		AdminHandler:       adminHandler,
+		HealthHandler:      healthHandler,
+		AuthHandler:        authHandler,
+		CommentHandler:     commentHandler,
+		Scheduler:          cronScheduler,
 	}, nil
 }

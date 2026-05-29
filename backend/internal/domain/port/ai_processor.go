@@ -11,4 +11,7 @@ type AIProcessor interface {
 
 	// Summarize generates a short 3-4 sentence summary from the given text.
 	Summarize(ctx context.Context, content string) (string, error)
+
+	// TranslateAndSummarize translates both title and content to Turkish and generates a short 3-4 sentence summary in a single call.
+	TranslateAndSummarize(ctx context.Context, title, content string) (string, string, string, error)
 }

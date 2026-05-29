@@ -6,6 +6,10 @@ function getHeaders(isAdmin = false) {
   const headers = {
     'Content-Type': 'application/json',
   };
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
   if (isAdmin) {
     const adminKey = localStorage.getItem('admin_api_key');
     if (adminKey) {
@@ -22,7 +26,9 @@ export async function fetchArticles(page = 1, limit = DEFAULT_LIMIT) {
 }
 
 export async function fetchArticle(id) {
-  const response = await fetch(`${API_BASE_URL}/articles/${id}`);
+  const response = await fetch(`${API_BASE_URL}/articles/${id}`, {
+    headers: getHeaders(true),
+  });
   if (!response.ok) throw new Error('Failed to fetch article');
   return response.json();
 }
@@ -133,6 +139,121 @@ export async function triggerProcess() {
   return response.json();
 }
 
+export async function fetchArticlesAdmin(topicId = '', page = 1, limit = 50) {
+  const params = new URLSearchParams();
+  if (topicId) params.append('topic_id', topicId);
+  params.append('page', String(page));
+  params.append('limit', String(limit));
+
+  const response = await fetch(`${API_BASE_URL}/admin/articles?${params.toString()}`, {
+    method: 'GET',
+    headers: getHeaders(true),
+  });
+  if (response.status === 401) {
+    localStorage.removeItem('admin_api_key');
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
+  }
+  if (!response.ok) throw new Error('Failed to fetch admin articles');
+  return response.json();
+}
+
+export async function updateArticleAdmin(id, updates) {
+  const response = await fetch(`${API_BASE_URL}/admin/articles/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(true),
+    body: JSON.stringify(updates),
+  });
+  if (response.status === 401) {
+    localStorage.removeItem('admin_api_key');
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
+  }
+  if (!response.ok) throw new Error('Failed to update article');
+  return response.json();
+}
+
+export async function deleteArticleAdmin(id) {
+  const response = await fetch(`${API_BASE_URL}/admin/articles/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(true),
+  });
+  if (response.status === 401) {
+    localStorage.removeItem('admin_api_key');
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
+  }
+  if (!response.ok) throw new Error('Failed to delete article');
+  return response.json();
+}
+
+// User Authentication API Calls
+export async function login(username, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Giriş başarısız.');
+  }
+  const data = await response.json();
+  localStorage.setItem('access_token', data.access_token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  if (data.user.role === 'Admin') {
+    localStorage.setItem('admin_api_key', 'haberbot-super-secret-admin-key');
+  }
+  return data;
+}
+
+export async function register(username, email, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, email, password }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Kayıt başarısız.');
+  }
+  return response.json();
+}
+
+export async function logout() {
+  try {
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: getHeaders(false),
+    });
+  } catch (e) {
+    console.error("Logout request failed:", e);
+  }
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('admin_api_key');
+}
+
+// Comments API Calls
+export async function fetchComments(articleId) {
+  const response = await fetch(`${API_BASE_URL}/comments?article_id=${articleId}`);
+  if (!response.ok) throw new Error('Yorumlar yüklenemedi.');
+  return response.json();
+}
+
+export async function createComment(articleId, content) {
+  const response = await fetch(`${API_BASE_URL}/comments`, {
+    method: 'POST',
+    headers: getHeaders(false),
+    body: JSON.stringify({ article_id: articleId, content }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Yorum gönderilemedi.');
+  }
+  return response.json();
+}
+
 export const api = {
   getArticles: fetchArticles,
   getArticle: fetchArticle,
@@ -145,4 +266,12 @@ export const api = {
   deleteTopic: deleteTopic,
   triggerFetch: triggerFetch,
   triggerProcess: triggerProcess,
+  getArticlesAdmin: fetchArticlesAdmin,
+  updateArticleAdmin: updateArticleAdmin,
+  deleteArticleAdmin: deleteArticleAdmin,
+  login,
+  register,
+  logout,
+  getComments: fetchComments,
+  createComment,
 };

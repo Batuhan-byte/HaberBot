@@ -48,6 +48,24 @@ func (m *mockArticleRepo) Save(ctx context.Context, article *entity.Article) err
 func (m *mockArticleRepo) Search(ctx context.Context, query string, source valueobject.SourceType, limit, offset int) ([]*entity.Article, error) {
 	return m.searchFunc(ctx, query, source, limit, offset)
 }
+func (m *mockArticleRepo) UpdateApprovalStatus(ctx context.Context, id string, isApproved bool) error {
+	return nil
+}
+func (m *mockArticleRepo) UpdateHidingStatus(ctx context.Context, id string, isHidden bool) error {
+	return nil
+}
+func (m *mockArticleRepo) Delete(ctx context.Context, id string) error {
+	return nil
+}
+func (m *mockArticleRepo) FindAllAdmin(ctx context.Context, topicID string, limit, offset int) ([]*entity.Article, error) {
+	return nil, nil
+}
+func (m *mockArticleRepo) CountAllAdmin(ctx context.Context, topicID string) (int, error) {
+	return 0, nil
+}
+func (m *mockArticleRepo) TrimPendingByTopic(ctx context.Context, topicID string, limit int) error {
+	return nil
+}
 
 func makeArticle(id, title string) *entity.Article {
 	return &entity.Article{

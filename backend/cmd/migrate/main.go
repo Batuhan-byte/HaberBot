@@ -59,5 +59,71 @@ func main() {
 	}
 	log.Println("Executed 003_add_turkish_content.up.sql")
 
+	// Read and execute 004
+	sql4, err := os.ReadFile("migrations/004_add_approval_and_hiding.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql4))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 004_add_approval_and_hiding.up.sql")
+
+	// Read and execute 005
+	sql5, err := os.ReadFile("migrations/005_add_approved_at.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql5))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 005_add_approved_at.up.sql")
+
+	// Read and execute 006
+	sql6, err := os.ReadFile("migrations/006_make_topic_id_nullable.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql6))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 006_make_topic_id_nullable.up.sql")
+
+	// Read and execute 007
+	sql7, err := os.ReadFile("migrations/007_create_users.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql7))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 007_create_users.up.sql")
+
+	// Read and execute 008
+	sql8, err := os.ReadFile("migrations/008_create_comments.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql8))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 008_create_comments.up.sql")
+
+	// Read and execute 009
+	sql9, err := os.ReadFile("migrations/009_seed_admin.up.sql")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = conn.Exec(ctx, string(sql9))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Executed 009_seed_admin.up.sql")
+
 	log.Println("All migrations executed successfully.")
 }

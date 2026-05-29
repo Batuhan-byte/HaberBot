@@ -41,4 +41,23 @@ type ArticleRepository interface {
 	// Search articles by title/content and/or source.
 	// Returns articles matching the search query and/or source with pagination.
 	Search(ctx context.Context, query string, source valueobject.SourceType, limit, offset int) ([]*entity.Article, error)
+
+	// UpdateApprovalStatus updates the approval status of an article.
+	UpdateApprovalStatus(ctx context.Context, id string, isApproved bool) error
+
+	// UpdateHidingStatus updates the hiding (soft-delete) status of an article.
+	UpdateHidingStatus(ctx context.Context, id string, isHidden bool) error
+
+	// Delete hard-deletes an article from the database.
+	Delete(ctx context.Context, id string) error
+
+	// FindAllAdmin retrieves all articles for the admin panel with topic filtering and pagination.
+	FindAllAdmin(ctx context.Context, topicID string, limit, offset int) ([]*entity.Article, error)
+
+	// CountAllAdmin returns the total count of articles matching the admin filter.
+	CountAllAdmin(ctx context.Context, topicID string) (int, error)
+
+	// TrimPendingByTopic removes oldest pending articles of a given topic (or NULL topic) if count exceeds the limit.
+	// Empty topicID specifies NULL topic_id.
+	TrimPendingByTopic(ctx context.Context, topicID string, limit int) error
 }

@@ -168,7 +168,7 @@
 }
 
 .manset-subtitle {
-  color: #ff79c6;
+  color: #60a5fa;
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -176,8 +176,8 @@
 
 /* Sağ Sütun: Vurgu Kartı */
 .vurgu-card {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  border: 1px solid #1e3a8a;
+  background: linear-gradient(135deg, #091835 0%, #000000 100%);
+  border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -189,7 +189,7 @@
 }
 
 .vurgu-card:hover {
-  border-color: #3b82f6;
+  border-color: #2563eb;
 }
 
 .vurgu-badge {

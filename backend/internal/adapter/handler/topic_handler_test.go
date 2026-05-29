@@ -11,6 +11,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"haberbot/internal/domain/entity"
+	"haberbot/internal/domain/port"
 	"haberbot/internal/domain/valueobject"
 	"haberbot/internal/usecase"
 )
@@ -62,6 +63,7 @@ func (m *mockTopicRepo) Delete(ctx context.Context, id string) error {
 }
 
 type mockArticleRepo struct {
+	port.ArticleRepository
 	findRecentFunc      func(ctx context.Context, limit int) ([]*entity.Article, error)
 	findByIDFunc        func(ctx context.Context, id string) (*entity.Article, error)
 	findByTopicIDFunc   func(ctx context.Context, topicID string, limit, offset int) ([]*entity.Article, error)
@@ -120,15 +122,33 @@ func (m *mockArticleRepo) Search(ctx context.Context, query string, source value
 	}
 	return nil, nil
 }
+func (m *mockArticleRepo) UpdateApprovalStatus(ctx context.Context, id string, isApproved bool) error {
+	return nil
+}
+func (m *mockArticleRepo) UpdateHidingStatus(ctx context.Context, id string, isHidden bool) error {
+	return nil
+}
+func (m *mockArticleRepo) Delete(ctx context.Context, id string) error {
+	return nil
+}
+func (m *mockArticleRepo) FindAllAdmin(ctx context.Context, topicID string, limit, offset int) ([]*entity.Article, error) {
+	return nil, nil
+}
+func (m *mockArticleRepo) CountAllAdmin(ctx context.Context, topicID string) (int, error) {
+	return 0, nil
+}
+func (m *mockArticleRepo) TrimPendingByTopic(ctx context.Context, topicID string, limit int) error {
+	return nil
+}
 
 type mockContentFetcher struct {
-	fetchByKeywordsFunc func(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error)
+	fetchFunc      func(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error)
 	sourceTypeFunc      func() valueobject.SourceType
 }
 
-func (m *mockContentFetcher) FetchByKeywords(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error) {
-	if m.fetchByKeywordsFunc != nil {
-		return m.fetchByKeywordsFunc(ctx, keywords)
+func (m *mockContentFetcher) Fetch(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error) {
+	if m.fetchFunc != nil {
+		return m.fetchFunc(ctx, topic)
 	}
 	return nil, nil
 }
@@ -142,6 +162,7 @@ func (m *mockContentFetcher) SourceType() valueobject.SourceType {
 type mockAIProcessor struct {
 	translateFunc func(ctx context.Context, title, content string) (string, string, error)
 	summarizeFunc func(ctx context.Context, content string) (string, error)
+	translateAndSummarizeFunc func(ctx context.Context, title, content string) (string, string, string, error)
 }
 
 func (m *mockAIProcessor) Translate(ctx context.Context, title, content string) (string, string, error) {
@@ -155,6 +176,12 @@ func (m *mockAIProcessor) Summarize(ctx context.Context, content string) (string
 		return m.summarizeFunc(ctx, content)
 	}
 	return "", nil
+}
+func (m *mockAIProcessor) TranslateAndSummarize(ctx context.Context, title, content string) (string, string, string, error) {
+	if m.translateAndSummarizeFunc != nil {
+		return m.translateAndSummarizeFunc(ctx, title, content)
+	}
+	return "", "", "", nil
 }
 
 func TestGetTopicArticles_EdgeCases(t *testing.T) {

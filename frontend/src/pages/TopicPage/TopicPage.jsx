@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import { formatRelativeDate } from '../../utils/formatDate';
 import Header from '../../components/Header/Header';
@@ -56,7 +56,7 @@ export default function TopicPage() {
   const { data: articlesData, isLoading, isError, refetch } = useQuery({
     queryKey: ['topicArticles', slug, page],
     queryFn: () => api.getTopicArticles(slug, page, limit),
-    keepPreviousData: true
+    placeholderData: keepPreviousData
   });
 
   const articles = articlesData?.articles || [];
@@ -130,7 +130,7 @@ export default function TopicPage() {
         {/* HAFTANIN ÖZETİ (AI SUMMARY) PANELİ */}
         <section className="haftanin-ozeti-panel mb-8" aria-label="Haftanın Özeti">
           <div className="ozet-icon-wrap">
-            <span className="material-symbols-outlined text-[#ff79c6] text-[24px]">insights</span>
+            <span className="material-symbols-outlined text-[#60a5fa] text-[24px]">insights</span>
           </div>
           <div className="ozet-content">
             <span className="ozet-badge">HAFTANIN ÖZETİ</span>
@@ -170,7 +170,10 @@ export default function TopicPage() {
                     <div className="cat-manset-overlay"></div>
                   </div>
                   <div className="cat-manset-body">
-                    <span className="cat-manset-badge">EDİTÖRÜN SEÇİMİ</span>
+                    <div className="flex gap-2 mb-2 items-center">
+                      <span className="cat-manset-badge">EDİTÖRÜN SEÇİMİ</span>
+                      <span className="manset-category-badge">{topicName}</span>
+                    </div>
                     <h2 className="cat-manset-title">{gridMainArticle.title_tr || gridMainArticle.title}</h2>
                   </div>
                 </Link>
@@ -217,6 +220,7 @@ export default function TopicPage() {
                       <div>
                         <div className="flex items-center gap-2 text-[0.7rem] text-gray-500 mb-2">
                           <span className="bg-[#222222] text-gray-300 px-2 py-0.5 rounded uppercase font-bold">{article.source === 'hackernews' ? 'HN' : 'RSS'}</span>
+                          <span className="row-card-badge-category text-[9px] px-1.5 py-0.5">{topicName}</span>
                           <span>{formatRelativeDate(article.created_at || article.fetched_at)}</span>
                         </div>
                         <h3 className="font-bold text-white leading-snug line-clamp-2 hover:text-[#3b82f6] transition-colors">{displayTitle}</h3>

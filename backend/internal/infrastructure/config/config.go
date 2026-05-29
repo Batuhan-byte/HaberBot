@@ -3,23 +3,28 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 // Config holds all configuration parameters for the application.
 type Config struct {
-	Port                string
-	Env                 string
-	DatabaseURL         string
-	GeminiAPIKey        string
-	AdminAPIKey         string
-	CronFetchSchedule   string
-	CronProcessSchedule string
-	FrontendURL         string
-	AIAPIKey            string
-	AIBaseURL           string
-	AIModel             string
+	Port                 string
+	Env                  string
+	DatabaseURL          string
+	GeminiAPIKey         string
+	AdminAPIKey          string
+	CronFetchSchedule    string
+	CronProcessSchedule  string
+	FrontendURL          string
+	AIAPIKey             string
+	AIBaseURL            string
+	AIModel              string
+	PendingLimitPerTopic int
+	JWTSecret            string
+	JWTAccessTTLMinutes  int
+	JWTRefreshTTLDays    int
 }
 
 // Load reads configuration variables from environment variables with sensible defaults.
@@ -63,17 +68,48 @@ func Load() Config {
 		aiModel = "mistral-large-latest"
 	}
 
+	pendingLimitStr := os.Getenv("PENDING_LIMIT_PER_TOPIC")
+	pendingLimit := 50
+	if pendingLimitStr != "" {
+		if val, err := strconv.Atoi(pendingLimitStr); err == nil && val >= 0 {
+			pendingLimit = val
+		}
+	}
+
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "haberbot-super-secret-jwt-signing-key-12345"
+	}
+
+	jwtAccessTTLMinutes := 15
+	if accessStr := os.Getenv("JWT_ACCESS_TTL_MINUTES"); accessStr != "" {
+		if val, err := strconv.Atoi(accessStr); err == nil && val > 0 {
+			jwtAccessTTLMinutes = val
+		}
+	}
+
+	jwtRefreshTTLDays := 7
+	if refreshStr := os.Getenv("JWT_REFRESH_TTL_DAYS"); refreshStr != "" {
+		if val, err := strconv.Atoi(refreshStr); err == nil && val > 0 {
+			jwtRefreshTTLDays = val
+		}
+	}
+
 	return Config{
-		Port:                port,
-		Env:                 env,
-		DatabaseURL:         os.Getenv("DATABASE_URL"),
-		GeminiAPIKey:        os.Getenv("GEMINI_API_KEY"),
-		AdminAPIKey:         os.Getenv("ADMIN_API_KEY"),
-		CronFetchSchedule:   cronFetch,
-		CronProcessSchedule: cronProcess,
-		FrontendURL:         frontendURL,
-		AIAPIKey:            os.Getenv("AI_API_KEY"),
-		AIBaseURL:           aiBaseURL,
-		AIModel:             aiModel,
+		Port:                 port,
+		Env:                  env,
+		DatabaseURL:          os.Getenv("DATABASE_URL"),
+		GeminiAPIKey:         os.Getenv("GEMINI_API_KEY"),
+		AdminAPIKey:          os.Getenv("ADMIN_API_KEY"),
+		CronFetchSchedule:    cronFetch,
+		CronProcessSchedule:  cronProcess,
+		FrontendURL:          frontendURL,
+		AIAPIKey:             os.Getenv("AI_API_KEY"),
+		AIBaseURL:            aiBaseURL,
+		AIModel:              aiModel,
+		PendingLimitPerTopic: pendingLimit,
+		JWTSecret:            jwtSecret,
+		JWTAccessTTLMinutes:  jwtAccessTTLMinutes,
+		JWTRefreshTTLDays:    jwtRefreshTTLDays,
 	}
 }

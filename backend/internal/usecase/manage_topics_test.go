@@ -197,12 +197,12 @@ func TestManageTopicsUseCase_Delete(t *testing.T) {
 
 type mockContentFetcher struct {
 	port.ContentFetcher
-	fetchByKeywordsFunc func(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error)
+	fetchFunc      func(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error)
 	sourceTypeFunc      func() valueobject.SourceType
 }
 
-func (m *mockContentFetcher) FetchByKeywords(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error) {
-	return m.fetchByKeywordsFunc(ctx, keywords)
+func (m *mockContentFetcher) Fetch(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error) {
+	return m.fetchFunc(ctx, topic)
 }
 func (m *mockContentFetcher) SourceType() valueobject.SourceType { return m.sourceTypeFunc() }
 
@@ -217,7 +217,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 
 		fetcher := &mockContentFetcher{
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceHackerNews },
-			fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+			fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 				return articles, nil
 			},
 		}
@@ -240,7 +240,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 			Sources:  []valueobject.SourceType{valueobject.SourceHackerNews},
 		}
 
-		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, repo)
+		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, repo, 50)
 		count, err := uc.Execute(ctx, topic)
 		require.NoError(t, err)
 		assert.Equal(t, 2, count)
@@ -250,7 +250,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 	t.Run("skips existing URLs", func(t *testing.T) {
 		fetcher := &mockContentFetcher{
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceHackerNews },
-			fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+			fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 				return []*entity.Article{
 					{Title: "Duplicate", OriginalURL: "https://example.com/dup"},
 				}, nil
@@ -264,7 +264,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 			},
 		}
 
-		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, repo)
+		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, repo, 50)
 		count, err := uc.Execute(ctx, &entity.Topic{
 			ID: "topic-1", Slug: "ai",
 			Keywords: []valueobject.TopicKeyword{"ai"},
@@ -279,7 +279,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceRSS },
 		}
 
-		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, &mockArticleRepo{})
+		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher}, &mockArticleRepo{}, 50)
 		count, err := uc.Execute(ctx, &entity.Topic{
 			ID: "topic-1", Slug: "ai",
 			Keywords: []valueobject.TopicKeyword{"ai"},
@@ -292,13 +292,13 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 	t.Run("continues on fetcher error", func(t *testing.T) {
 		fetcher1 := &mockContentFetcher{
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceHackerNews },
-			fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+			fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 				return nil, errors.New("network error")
 			},
 		}
 		fetcher2 := &mockContentFetcher{
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceRSS },
-			fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+			fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 				return []*entity.Article{{Title: "RSS Article", OriginalURL: "https://rss.com/1"}}, nil
 			},
 		}
@@ -308,7 +308,7 @@ func TestFetchArticlesUseCase_Execute(t *testing.T) {
 			saveFunc:        func(_ context.Context, _ *entity.Article) error { return nil },
 		}
 
-		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher1, fetcher2}, repo)
+		uc := NewFetchArticlesUseCase([]port.ContentFetcher{fetcher1, fetcher2}, repo, 50)
 		count, err := uc.Execute(ctx, &entity.Topic{
 			ID: "topic-1", Slug: "ai",
 			Keywords: []valueobject.TopicKeyword{"ai"},
@@ -342,8 +342,8 @@ func TestProcessArticlesUseCase_Execute(t *testing.T) {
 		}
 
 		ai := &mockAIProcessor{
-			translateFunc: func(_ context.Context, title, content string) (string, string, error) {
-				return "Türkçe: " + title, "Türkçe: " + content, nil
+			translateAndSummarizeFunc: func(_ context.Context, title, content string) (string, string, string, error) {
+				return "Türkçe: " + title, "Türkçe: " + content, "Türkçe Özet", nil
 			},
 		}
 
@@ -368,12 +368,12 @@ func TestProcessArticlesUseCase_Execute(t *testing.T) {
 		}
 
 		ai := &mockAIProcessor{
-			translateFunc: func(_ context.Context, title, content string) (string, string, error) {
+			translateAndSummarizeFunc: func(_ context.Context, title, content string) (string, string, string, error) {
 				callCount++
 				if callCount == 1 {
-					return "Title", "Content", nil
+					return "Title", "Content", "Summary", nil
 				}
-				return "", "", errors.New("ai error")
+				return "", "", "", errors.New("ai error")
 			},
 		}
 
@@ -406,8 +406,8 @@ func TestProcessArticlesUseCase_Execute(t *testing.T) {
 			},
 		}
 		ai := &mockAIProcessor{
-			translateFunc: func(_ context.Context, _, _ string) (string, string, error) {
-				return "T", "C", nil
+			translateAndSummarizeFunc: func(_ context.Context, _, _ string) (string, string, string, error) {
+				return "T", "C", "S", nil
 			},
 		}
 
@@ -438,7 +438,7 @@ func TestDailyPipelineUseCase(t *testing.T) {
 
 		fetchCalled := 0
 		fetchUC := &FetchArticlesUseCase{}
-		*fetchUC = *NewFetchArticlesUseCase([]port.ContentFetcher{}, &mockArticleRepo{})
+		*fetchUC = *NewFetchArticlesUseCase([]port.ContentFetcher{}, &mockArticleRepo{}, 50)
 
 		processUC := NewProcessArticlesUseCase(&mockAIProcessor{}, &mockArticleRepo{})
 
@@ -446,7 +446,7 @@ func TestDailyPipelineUseCase(t *testing.T) {
 		// Override fetchUC.Execute to count calls using mock fetcher
 		mockFetch := &mockContentFetcher{
 			sourceTypeFunc: func() valueobject.SourceType { return valueobject.SourceHackerNews },
-			fetchByKeywordsFunc: func(_ context.Context, _ []valueobject.TopicKeyword) ([]*entity.Article, error) {
+			fetchFunc: func(_ context.Context, _ *entity.Topic) ([]*entity.Article, error) {
 				fetchCalled++
 				return []*entity.Article{}, nil
 			},
@@ -454,7 +454,7 @@ func TestDailyPipelineUseCase(t *testing.T) {
 		*fetchUC = *NewFetchArticlesUseCase([]port.ContentFetcher{mockFetch}, &mockArticleRepo{
 			existsByURLFunc: func(_ context.Context, _ string) (bool, error) { return false, nil },
 			saveFunc:        func(_ context.Context, _ *entity.Article) error { return nil },
-		})
+		}, 50)
 
 		// Create topics with matching sources so fetcher is enabled
 		for _, t := range topics {
@@ -483,14 +483,14 @@ func TestDailyPipelineUseCase(t *testing.T) {
 			},
 		}
 		ai := &mockAIProcessor{
-			translateFunc: func(_ context.Context, title, content string) (string, string, error) {
-				return "T " + title, "C " + content, nil
+			translateAndSummarizeFunc: func(_ context.Context, title, content string) (string, string, string, error) {
+				return "T " + title, "C " + content, "Summary", nil
 			},
 		}
 
 		pUC := NewProcessArticlesUseCase(ai, repo)
 		uc := NewDailyPipelineUseCase(
-			NewFetchArticlesUseCase([]port.ContentFetcher{}, repo),
+			NewFetchArticlesUseCase([]port.ContentFetcher{}, repo, 50),
 			pUC,
 			NewManageTopicsUseCase(&mockTopicRepo{
 				findAllFunc: func(_ context.Context) ([]*entity.Topic, error) { return []*entity.Topic{}, nil },

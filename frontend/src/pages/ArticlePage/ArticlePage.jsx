@@ -37,6 +37,18 @@ export default function ArticlePage() {
     queryFn: () => api.getArticle(id),
   });
 
+  // Fetch topics for category badge mapping
+  const { data: topics } = useQuery({ 
+    queryKey: ['topics'], 
+    queryFn: api.getTopics 
+  });
+  const topicsList = topics?.topics && Array.isArray(topics.topics) ? topics.topics : [];
+
+  const getCategoryName = (topicId) => {
+    const topic = topicsList.find(t => t.id === topicId);
+    return topic ? topic.name : 'Teknoloji';
+  };
+
   const queryClient = useQueryClient();
   const summaryMutation = useMutation({
     mutationFn: (articleId) => api.generateSummary(articleId),
@@ -80,7 +92,8 @@ export default function ArticlePage() {
           <article className="lg:col-span-8" aria-labelledby="article-title">
             <header className="mb-10">
               <div className="flex items-center gap-3 mb-6">
-                <span className="px-2 py-0.5 bg-surface-container-highest border border-outline-variant font-label-sm text-label-sm rounded uppercase tracking-wider text-primary">{article.source || 'Haber'}</span>
+                <span className="px-2 py-0.5 bg-surface-container-highest border border-outline-variant font-label-sm text-label-sm rounded uppercase tracking-wider text-primary">{article.source === 'hackernews' ? 'HN' : 'RSS'}</span>
+                <span className="row-card-badge-category font-label-sm text-label-sm uppercase tracking-wider">{getCategoryName(article.topic_id)}</span>
                 <span className="text-on-surface-variant font-label-md text-label-md">{article.created_at ? new Date(article.created_at).toLocaleString('tr-TR') : new Date().toLocaleString('tr-TR')}</span>
               </div>
               <h1 id="article-title" className="font-headline-lg text-headline-lg text-primary mb-6 leading-tight">
@@ -176,6 +189,9 @@ export default function ArticlePage() {
               />
             </section>
 
+            {/* Premium Comments Section */}
+            <CommentsSection articleId={id} />
+
           </article>
 
           <aside className="lg:col-span-4 space-y-8" aria-label="Yan Menü Bilgileri">
@@ -222,5 +238,142 @@ export default function ArticlePage() {
         </div>
       </footer>
     </>
+  );
+}
+
+function CommentsSection({ articleId }) {
+  const [commentContent, setCommentContent] = useState('');
+  const [commentError, setCommentError] = useState('');
+  const userJson = localStorage.getItem('user');
+  const loggedInUser = userJson ? JSON.parse(userJson) : null;
+  const queryClient = useQueryClient();
+
+  // Fetch comments query
+  const { data: commentsData, isLoading, refetch } = useQuery({
+    queryKey: ['comments', articleId],
+    queryFn: () => api.getComments(articleId),
+    enabled: !!articleId,
+  });
+
+  const comments = commentsData?.comments || [];
+
+  // Create comment mutation
+  const commentMutation = useMutation({
+    mutationFn: (content) => api.createComment(articleId, content),
+    onSuccess: () => {
+      setCommentContent('');
+      setCommentError('');
+      queryClient.invalidateQueries({ queryKey: ['comments', articleId] });
+      refetch();
+    },
+    onError: (err) => {
+      setCommentError(err.message || 'Yorum gönderilirken bir hata oluştu.');
+    }
+  });
+
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (!commentContent.trim()) return;
+    commentMutation.mutate(commentContent);
+  };
+
+  return (
+    <section className="mt-16 border-t border-outline-variant/30 pt-10" aria-label="Yorumlar">
+      <h2 className="font-headline-sm text-headline-sm text-primary mb-8 font-bold flex items-center gap-2">
+        <span className="material-symbols-outlined text-primary">forum</span>
+        <span>Yorumlar ({comments.length})</span>
+      </h2>
+
+      {/* Comment Form */}
+      {loggedInUser ? (
+        <form onSubmit={handleCommentSubmit} className="space-y-4 mb-10 bg-surface-container-low/30 border border-outline-variant/40 p-6 rounded-2xl backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/20 text-primary border border-primary/30 flex items-center justify-center font-bold text-sm">
+              {loggedInUser.username[0].toUpperCase()}
+            </div>
+            <span className="font-label-md text-label-md text-on-surface-variant/80">@{loggedInUser.username} olarak yorum yazın</span>
+          </div>
+
+          {commentError && (
+            <div className="bg-error/15 border border-error/30 text-error px-4 py-2.5 rounded-lg text-body-sm flex items-center space-x-2">
+              <span>⚠️ {commentError}</span>
+            </div>
+          )}
+
+          <textarea
+            value={commentContent}
+            onChange={(e) => setCommentContent(e.target.value)}
+            placeholder="Teknolojik gelişmeler hakkında düşüncelerinizi paylaşın..."
+            className="w-full min-h-[100px] bg-background/50 border border-outline-variant/60 text-on-surface px-4 py-3 rounded-xl focus:outline-none focus:border-primary transition-all duration-200 resize-none font-body-md"
+            required
+            disabled={commentMutation.isPending}
+          />
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={commentMutation.isPending || !commentContent.trim()}
+              className={`px-6 py-2.5 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-md shadow-primary/20 flex items-center gap-2 ${commentMutation.isPending ? 'opacity-70' : ''}`}
+            >
+              {commentMutation.isPending ? 'Gönderiliyor...' : 'Yorum Yap'}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="mb-10 p-8 bg-surface-container-low/10 border border-blue-500/10 rounded-2xl text-center backdrop-blur-md">
+          <p className="text-gray-400 font-body-md mb-6">Bu haber hakkında tartışmak ve düşüncelerinizi paylaşmak için giriş yapmanız gerekmektedir.</p>
+          <div className="flex items-center justify-center gap-4">
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'login' } }))}
+              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-xl hover:shadow-[0_0_15px_rgba(37,99,235,0.25)] transition-all duration-300 text-sm active:scale-95 shadow-lg"
+            >
+              Giriş Yap
+            </button>
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'register' } }))}
+              className="px-6 py-2.5 border border-blue-500/20 hover:border-blue-500/40 text-blue-400 hover:text-blue-300 font-bold rounded-xl hover:bg-blue-500/5 transition-all duration-300 text-sm active:scale-95"
+            >
+              Kayıt Ol
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Comments List */}
+      <div className="space-y-6">
+        {isLoading ? (
+          <div className="text-center py-6 text-on-surface-variant/40 animate-pulse">Yorumlar yükleniyor...</div>
+        ) : comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment.id} className="p-5 border border-outline-variant/30 rounded-2xl bg-surface-container-low/10 flex gap-4 backdrop-blur-sm transition-all duration-200 hover:border-outline-variant/60">
+              <div className="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant/60 flex items-center justify-center font-bold text-primary shadow-inner">
+                {comment.username ? comment.username[0].toUpperCase() : 'U'}
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-label-md text-label-md text-white font-semibold">@{comment.username}</span>
+                    {comment.username === 'admin1' && (
+                      <span className="px-2 py-0.5 bg-primary/20 border border-primary/30 text-primary text-[10px] font-bold uppercase rounded-full">Yönetici</span>
+                    )}
+                  </div>
+                  <span className="text-[12px] text-on-surface-variant/60">
+                    {new Date(comment.created_at).toLocaleString('tr-TR')}
+                  </span>
+                </div>
+                <p className="font-body-md text-body-md text-on-surface-variant/90 leading-relaxed whitespace-pre-wrap">
+                  {comment.content}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-12 text-on-surface-variant/40 border border-dashed border-outline-variant/30 rounded-2xl">
+            <span className="material-symbols-outlined text-[36px] mb-2 text-primary/40 block">forum</span>
+            <p className="font-body-md font-medium">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

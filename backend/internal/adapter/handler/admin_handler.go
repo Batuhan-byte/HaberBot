@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"haberbot/internal/domain/entity"
 	"haberbot/internal/domain/valueobject"
@@ -9,17 +11,24 @@ import (
 
 // AdminHandler handles administrator endpoints, protected by API key auth.
 type AdminHandler struct {
-	manageTopicsUC *usecase.ManageTopicsUseCase
-	pipelineUC     *usecase.DailyPipelineUseCase
-	adminAPIKey    string
+	manageTopicsUC   *usecase.ManageTopicsUseCase
+	manageArticlesUC *usecase.ManageArticlesUseCase
+	pipelineUC       *usecase.DailyPipelineUseCase
+	adminAPIKey      string
 }
 
 // NewAdminHandler creates a new AdminHandler.
-func NewAdminHandler(manageTopicsUC *usecase.ManageTopicsUseCase, pipelineUC *usecase.DailyPipelineUseCase, adminAPIKey string) *AdminHandler {
+func NewAdminHandler(
+	manageTopicsUC *usecase.ManageTopicsUseCase,
+	manageArticlesUC *usecase.ManageArticlesUseCase,
+	pipelineUC *usecase.DailyPipelineUseCase,
+	adminAPIKey string,
+) *AdminHandler {
 	return &AdminHandler{
-		manageTopicsUC: manageTopicsUC,
-		pipelineUC:     pipelineUC,
-		adminAPIKey:    adminAPIKey,
+		manageTopicsUC:   manageTopicsUC,
+		manageArticlesUC: manageArticlesUC,
+		pipelineUC:       pipelineUC,
+		adminAPIKey:      adminAPIKey,
 	}
 }
 
@@ -180,5 +189,100 @@ func (h *AdminHandler) TriggerProcess(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message":   "processing completed",
 		"processed": processed,
+	})
+}
+
+// ListArticlesAdmin handles GET /api/v1/admin/articles
+func (h *AdminHandler) ListArticlesAdmin(c *fiber.Ctx) error {
+	topicID := c.Query("topic_id", "")
+	pageStr := c.Query("page", "1")
+	limitStr := c.Query("limit", "50")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 50
+	}
+
+	offset := (page - 1) * limit
+
+	articles, total, err := h.manageArticlesUC.ListArticlesAdmin(c.Context(), topicID, limit, offset)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"articles": articles,
+		"total":    total,
+		"page":     page,
+		"limit":    limit,
+	})
+}
+
+type updateArticleAdminRequest struct {
+	IsApproved *bool `json:"is_approved"`
+	IsHidden   *bool `json:"is_hidden"`
+}
+
+// UpdateArticleAdmin handles PUT /api/v1/admin/articles/:id
+func (h *AdminHandler) UpdateArticleAdmin(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "id parameter is required",
+		})
+	}
+
+	var req updateArticleAdminRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid request body",
+		})
+	}
+
+	if req.IsApproved != nil {
+		if err := h.manageArticlesUC.Approve(c.Context(), id, *req.IsApproved); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+	}
+
+	if req.IsHidden != nil {
+		if err := h.manageArticlesUC.Hide(c.Context(), id, *req.IsHidden); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "article updated successfully",
+	})
+}
+
+// DeleteArticleAdmin handles DELETE /api/v1/admin/articles/:id
+func (h *AdminHandler) DeleteArticleAdmin(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "id parameter is required",
+		})
+	}
+
+	if err := h.manageArticlesUC.Delete(c.Context(), id); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "article deleted successfully",
 	})
 }

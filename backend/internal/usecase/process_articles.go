@@ -43,8 +43,8 @@ func (uc *ProcessArticlesUseCase) Execute(ctx context.Context, batchSize int) (i
 			return processed, fmt.Errorf("context cancelled: %w", err)
 		}
 
-		// Send content to AI for full translation
-		turkishTitle, turkishContent, err := uc.aiProcessor.Translate(ctx, article.Title, article.OriginalContent)
+		// Send content to AI for translation and summarization in one smart call
+		turkishTitle, turkishContent, turkishSummary, err := uc.aiProcessor.TranslateAndSummarize(ctx, article.Title, article.OriginalContent)
 		if err != nil {
 			slog.Error("failed to process article with AI",
 				"article_id", article.ID,
@@ -58,6 +58,7 @@ func (uc *ProcessArticlesUseCase) Execute(ctx context.Context, batchSize int) (i
 		now := time.Now()
 		article.TurkishTitle = turkishTitle
 		article.TurkishContent = turkishContent
+		article.TurkishSummary = turkishSummary
 		article.ProcessedAt = &now
 
 		if err := uc.articleRepo.Save(ctx, article); err != nil {

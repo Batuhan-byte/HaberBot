@@ -45,6 +45,11 @@ type hackerNewsItem struct {
 	Type  string `json:"type"`
 }
 
+// Fetch retrieves top stories from HackerNews that match the topic's keywords.
+func (f *HackerNewsFetcher) Fetch(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error) {
+	return f.FetchByKeywords(ctx, topic.Keywords)
+}
+
 // FetchByKeywords retrieves top stories from HackerNews that match any of
 // the given keywords in their title.
 func (f *HackerNewsFetcher) FetchByKeywords(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error) {

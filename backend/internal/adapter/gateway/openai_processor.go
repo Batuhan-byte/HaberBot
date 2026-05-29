@@ -18,6 +18,7 @@ Kurallar:
 - Emoji kullanma
 - Doğal ve akıcı Türkçe yaz
 - SADECE çeviriyi ver, kendi yorumunu katma.
+- İçerikteki tüm HTML etiketlerini (ör: <p>, <a>, <strong>, <ul>, <li>, <h2> vb.) kesinlikle koru. Çeviri yaparken etiketlerin yerlerini ve yapısını bozma, sadece etiketlerin içindeki metinleri çevir.
 - Haberin başında veya sonunda yer alan; reklamlar, çerez onay metinleri, abonelik/paywall uyarıları (örneğin: "Skip Ad", "You are viewing a preview", "Sign in to continue", "Subscribe to read", "Erişim onaylandığında makale yüklenecektir", "ReklamATLA" vb.) gibi haber içeriğiyle ilgisi olmayan sistem, reklam veya üyelik mesajlarını TESPİT EDİP ÇIKAR. Bunları çeviriye dahil etme, doğrudan atla ve sadece asıl haberi çevir.
 
 Başlık: %s
@@ -34,6 +35,24 @@ SADECE özeti ver.
 İçerik: %s
 
 Yanıtını tam olarak şu formatta ver:
+OZET: [Özet metni]`
+
+const translateAndSummarizePromptTemplate = `Sen bir teknoloji haberleri çevirmenisin.
+Görevin: Verilen İngilizce makale başlığını ve metnini profesyonel, akıcı bir Türkçeye çevirmek ve aynı zamanda 3-4 cümlelik Türkçe "hap bilgi" özeti oluşturmak.
+Kurallar:
+- Teknik terimler İngilizce kalmalı (ör: API, machine learning, framework, React, Go)
+- Emoji kullanma
+- Doğal ve akıcı Türkçe yaz
+- SADECE çeviriyi ve özeti ver, kendi yorumunu katma.
+- İçerikteki tüm HTML etiketlerini (ör: <p>, <a>, <strong>, <ul>, <li>, <h2> vb.) kesinlikle koru. Çeviri yaparken etiketlerin yerlerini ve yapısını bozma, sadece etiketlerin içindeki metinleri çevir.
+- Haberin başında veya sonunda yer alan; reklamlar, çerez onay metinleri, abonelik/paywall uyarıları (örneğin: "Skip Ad", "You are viewing a preview", "Sign in to continue", "Subscribe to read", "Erişim onaylandığında makale yüklenecektir", "ReklamATLA" vb.) gibi haber içeriğiyle ilgisi olmayan sistem, reklam veya üyelik mesajlarını TESPİT EDİP ÇIKAR. Bunları çeviriye dahil etme, doğrudan atla ve sadece asıl haberi çevir.
+
+Başlık: %s
+İçerik: %s
+
+Yanıtını tam olarak şu formatta ver:
+BASLIK: [Türkçe başlık]
+METIN: [Türkçe tam çeviri]
 OZET: [Özet metni]`
 
 // OpenAIProcessor implements port.AIProcessor using an OpenAI-compatible client API.
@@ -94,6 +113,36 @@ func (p *OpenAIProcessor) Summarize(ctx context.Context, content string) (string
 
 	return summary, nil
 }
+
+func (p *OpenAIProcessor) TranslateAndSummarize(ctx context.Context, title, content string) (string, string, string, error) {
+	config := openai.DefaultConfig(p.apiKey)
+	config.BaseURL = p.baseURL
+	client := openai.NewClientWithConfig(config)
+
+	prompt := fmt.Sprintf(translateAndSummarizePromptTemplate, title, truncateContent(content))
+	response, err := p.generateContent(ctx, client, prompt)
+	if err != nil {
+		return "", "", "", err
+	}
+
+	turkishTitle := extractField(response, "BASLIK:")
+	if turkishTitle == "" {
+		turkishTitle = extractField(response, "TITLE:") 
+	}
+
+	turkishContent := extractFieldBetween(response, "METIN:", "OZET:")
+	if turkishContent == "" {
+		turkishContent = extractFieldMultiLine(response, "METIN:")
+	}
+	if turkishContent == "" {
+		turkishContent = response // Fallback: just return everything if format fails
+	}
+
+	turkishSummary := extractFieldMultiLine(response, "OZET:")
+
+	return turkishTitle, turkishContent, turkishSummary, nil
+}
+
 
 func (p *OpenAIProcessor) generateContent(ctx context.Context, client *openai.Client, prompt string) (string, error) {
 	resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
@@ -203,3 +252,50 @@ func truncateContent(content string) string {
 	}
 	return content
 }
+
+func getVariations(prefix string) []string {
+	prefixClean := cleanPrefix(prefix)
+	if prefixClean == "BASLIK" {
+		return []string{"BASLIK:", "BAŞLIK:", "TITLE:", "Baslik:", "Başlık:", "Title:", "baslik:", "başlık:", "title:"}
+	} else if prefixClean == "OZET" {
+		return []string{"OZET:", "ÖZET:", "SUMMARY:", "Ozet:", "Özet:", "Summary:", "ozet:", "özet:", "summary:"}
+	} else if prefixClean == "METIN" {
+		return []string{"METIN:", "METİN:", "METIN :", "METİN :", "CONTENT:", "TEXT:", "Metin:", "Metin :", "Content:", "Text:", "metin:", "metin :", "content:", "text:"}
+	}
+	return []string{prefix}
+}
+
+func extractFieldBetween(text, startPrefix, endPrefix string) string {
+	startVariations := getVariations(startPrefix)
+	endVariations := getVariations(endPrefix)
+
+	var startIdx = -1
+	for _, sv := range startVariations {
+		idx := strings.Index(text, sv)
+		if idx != -1 {
+			startIdx = idx + len(sv)
+			break
+		}
+	}
+
+	if startIdx == -1 {
+		return ""
+	}
+
+	subText := text[startIdx:]
+	var endIdx = -1
+	for _, ev := range endVariations {
+		idx := strings.Index(subText, ev)
+		if idx != -1 {
+			endIdx = idx
+			break
+		}
+	}
+
+	if endIdx != -1 {
+		return strings.TrimSpace(subText[:endIdx])
+	}
+
+	return strings.TrimSpace(subText)
+}
+

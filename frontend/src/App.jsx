@@ -6,10 +6,13 @@ import ArticlePage from './pages/ArticlePage/ArticlePage';
 import TopicPage from './pages/TopicPage/TopicPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import LoginPage from './pages/LoginPage/LoginPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/AdminPage/AdminDashboard';
 import AdminSources from './pages/AdminPage/AdminSources';
 import AdminContent from './pages/AdminPage/AdminContent';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
+import AuthModal from './components/AuthModal/AuthModal';
 import './App.css';
 
 // Initialize TanStack Query client
@@ -34,17 +37,34 @@ function App() {
           <Route path="/haber/:id" element={<ArticlePage />} />
           <Route path="/arama" element={<SearchPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/sources" element={<AdminSources />} />
-          <Route path="/admin/content" element={<AdminContent />} />
+          <Route path="/admin" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/sources" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminSources />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/content" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminContent />
+            </ProtectedRoute>
+          } />
           
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        
+        {/* Global Auth Modal for tabbed Login/Register Popup */}
+        <AuthModal />
       </BrowserRouter>
     </QueryClientProvider>
   );
 }
 
 export default App;
+

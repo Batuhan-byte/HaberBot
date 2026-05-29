@@ -35,6 +35,16 @@ export default function AdminLayout({
             <span className="material-symbols-outlined text-[20px]" data-icon="article">article</span>
             Content Management
           </NavLink>
+          <div className="flex items-center gap-3 py-2.5 px-3 rounded text-zinc-600 cursor-not-allowed opacity-50 font-label-md text-label-md select-none">
+            <span className="material-symbols-outlined text-[20px]">group</span>
+            Users
+            <span className="text-[8px] bg-zinc-900 text-zinc-500 px-1.5 py-0.5 rounded font-mono uppercase ml-auto tracking-wider font-extrabold">Kilitli</span>
+          </div>
+          <div className="flex items-center gap-3 py-2.5 px-3 rounded text-zinc-600 cursor-not-allowed opacity-50 font-label-md text-label-md select-none">
+            <span className="material-symbols-outlined text-[20px]">terminal</span>
+            Logs
+            <span className="text-[8px] bg-zinc-900 text-zinc-500 px-1.5 py-0.5 rounded font-mono uppercase ml-auto tracking-wider font-extrabold">Kilitli</span>
+          </div>
           <NavLink to="/" className={getNavLinkClass}>
             <span className="material-symbols-outlined text-[20px]" data-icon="home">home</span>
             Siteye Dön

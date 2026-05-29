@@ -41,6 +41,12 @@ type Article struct {
 	FetchedAt time.Time `json:"fetched_at"`
 	// CreatedAt records when the article was persisted in the database.
 	CreatedAt time.Time `json:"created_at"`
+	// IsApproved indicates if the article has been approved by an administrator.
+	IsApproved bool `json:"is_approved"`
+	// IsHidden indicates if the article is temporarily hidden/soft-deleted.
+	IsHidden bool `json:"is_hidden"`
+	// ApprovedAt records when the article was approved by an administrator. Nil means not approved.
+	ApprovedAt *time.Time `json:"approved_at"`
 }
 
 // IsProcessed returns true if the article has been processed by the AI pipeline,

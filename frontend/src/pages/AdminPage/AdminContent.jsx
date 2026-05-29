@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import AdminLayout from '../../components/Admin/AdminLayout';
 
@@ -48,7 +48,7 @@ export default function AdminContent() {
   const { data: adminArticlesData, isLoading, refetch } = useQuery({
     queryKey: ['admin_articles', selectedTopicId, page],
     queryFn: () => api.getArticlesAdmin(selectedTopicId, page, limit),
-    keepPreviousData: true
+    placeholderData: keepPreviousData
   });
 
   const rawArticles = adminArticlesData?.articles || [];
@@ -178,31 +178,37 @@ export default function AdminContent() {
 
                 {/* Secondary Category Filter (only when "Onay Bekleyenler" is active) */}
                 {(selectedTopicId === 'pending' || selectedTopicId.startsWith('pending:')) ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Kategori:</span>
-                    <select
-                      value={selectedTopicId.startsWith('pending:') ? selectedTopicId.split('pending:')[1] : ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '') {
-                          setSelectedTopicId('pending');
-                        } else {
-                          setSelectedTopicId(`pending:${val}`);
-                        }
-                        setPage(1);
-                      }}
-                      className="bg-zinc-900 border border-zinc-800 rounded-md px-3 py-1.5 text-xs text-white outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 font-bold cursor-pointer transition-all hover:border-zinc-700"
+                  <div className="flex flex-wrap gap-1.5 items-center pl-2 border-l border-zinc-800">
+                    <button
+                      onClick={() => { setSelectedTopicId('pending'); setPage(1); }}
+                      className={`px-3 py-1 text-[10px] font-extrabold rounded-full border transition-all ${selectedTopicId === 'pending' ? 'bg-amber-500/15 border-amber-500/40 text-amber-400' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-white'}`}
                     >
-                      <option value="">Tümü</option>
-                      {topicsList.map(topic => (
-                        <option key={topic.id} value={topic.id}>{topic.name}</option>
-                      ))}
-                    </select>
+                      Tümü (Bekleyen)
+                    </button>
+                    {topicsList.map(topic => {
+                      const isActive = selectedTopicId === `pending:${topic.id}`;
+                      return (
+                        <button
+                          key={topic.id}
+                          onClick={() => { setSelectedTopicId(`pending:${topic.id}`); setPage(1); }}
+                          className={`px-3 py-1 text-[10px] font-extrabold rounded-full border transition-all whitespace-nowrap ${isActive ? 'bg-amber-500/15 border-amber-500/40 text-amber-400' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-white'}`}
+                        >
+                          {topic.name}
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : null}
               </div>
-              <div className="flex items-center gap-2 text-zinc-400 text-xs font-bold">
+              <div className="flex items-center gap-4 text-zinc-400 text-xs font-bold">
                 <span>Tabloda Gösterilen: <strong className="text-white">{filteredArticles.length}</strong> / Sistemde Kayıtlı: <strong className="text-white">{totalArticles}</strong></span>
+                <button
+                  onClick={() => refetch()}
+                  className="p-1.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white rounded-md flex items-center justify-center transition-all duration-200 active:scale-95 shadow-sm"
+                  title="Haber Listesini Yenile"
+                >
+                  <span className={`material-symbols-outlined text-[15px] ${isLoading ? 'animate-spin' : ''}`}>refresh</span>
+                </button>
               </div>
             </div>
 

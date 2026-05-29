@@ -28,9 +28,17 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
   const [theme, setTheme] = useState('dark');
   const [showDropdown, setShowDropdown] = useState(false);
 
-  useEffect(() => {
+  const checkLogin = () => {
     const adminKey = localStorage.getItem('admin_api_key');
-    setIsLoggedIn(!!adminKey);
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!adminKey || !!user);
+  };
+
+  useEffect(() => {
+    checkLogin();
+    
+    window.addEventListener('user-auth-changed', checkLogin);
+    return () => window.removeEventListener('user-auth-changed', checkLogin);
   }, [location.pathname]);
 
   // Load and apply theme
@@ -256,8 +264,10 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                   <button 
                     onClick={() => {
                       localStorage.removeItem('admin_api_key');
+                      localStorage.removeItem('user');
                       setIsLoggedIn(false);
                       navigate('/');
+                      window.location.reload();
                     }}
                     className="hb-action-icon-btn btn-logout" 
                     title="Çıkış Yap"
@@ -272,10 +282,13 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                   </Link>
                 </div>
               ) : (
-                <Link to="/login" className="hb-premium-login-btn">
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'login' } }))}
+                  className="hb-premium-login-btn"
+                >
                   <span className="material-symbols-outlined">person</span>
                   <span>ÜYE GİRİŞİ</span>
-                </Link>
+                </button>
               )}
 
               {/* Koyu/Açık Mod Switcher Toggle */}
@@ -373,7 +386,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                 {/* Left Side: Featured Mega Article Card */}
                 {drawerArticles[0] && (() => {
                   const art = drawerArticles[0];
-                  const displayTitle = art.turkish_title || art.title;
+                  const displayTitle = art.title_tr || art.title;
                   const cleanSummary = stripHtmlTags(art.turkish_summary || art.summary || art.original_content).slice(0, 110);
                   return (
                     <Link 
@@ -405,7 +418,7 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
                 {/* Right Side: List of 4 other items */}
                 <div className="dropdown-side-list">
                   {drawerArticles.slice(1, 5).map(art => {
-                    const displayTitle = art.turkish_title || art.title;
+                    const displayTitle = art.title_tr || art.title;
                     return (
                       <Link 
                         key={art.id} 
@@ -455,14 +468,39 @@ export default function Header({ searchQuery = '', setSearchQuery, selectedTopic
       <div className={`hb-left-drawer ${isLeftDrawerOpen ? 'is-open' : ''}`}>
         {/* User Account / Close Button Bar */}
         <div className="left-drawer-header">
-          <Link to="/login" className="drawer-user-info" onClick={() => setIsLeftDrawerOpen(false)}>
-            <div className="drawer-user-avatar">
-              <span className="material-symbols-outlined text-[20px]">person</span>
+          {isLoggedIn ? (
+            <div className="drawer-user-info">
+              <div className="drawer-user-avatar bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                <span className="material-symbols-outlined text-[20px]">person</span>
+              </div>
+              <div className="drawer-user-text flex flex-col">
+                <span className="drawer-username text-white font-bold font-sans">
+                  @{(() => {
+                    try {
+                      return JSON.parse(localStorage.getItem('user'))?.username || 'Yönetici';
+                    } catch(e) {
+                      return 'Kullanıcı';
+                    }
+                  })()}
+                </span>
+              </div>
             </div>
-            <div className="drawer-user-text flex flex-col">
-              <span className="drawer-username">Giriş Yap / Üye Ol</span>
+          ) : (
+            <div 
+              className="drawer-user-info cursor-pointer" 
+              onClick={() => {
+                setIsLeftDrawerOpen(false);
+                window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { tab: 'login' } }));
+              }}
+            >
+              <div className="drawer-user-avatar">
+                <span className="material-symbols-outlined text-[20px]">person</span>
+              </div>
+              <div className="drawer-user-text flex flex-col">
+                <span className="drawer-username">Giriş Yap / Üye Ol</span>
+              </div>
             </div>
-          </Link>
+          )}
           <button 
             className="drawer-close-btn" 
             onClick={() => setIsLeftDrawerOpen(false)}

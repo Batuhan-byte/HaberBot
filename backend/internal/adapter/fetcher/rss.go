@@ -28,13 +28,48 @@ func NewRSSFetcher(feeds []string) *RSSFetcher {
 	}
 }
 
+// Fetch retrieves items from RSS feeds dynamically for the given topic, with smart filtering.
+func (f *RSSFetcher) Fetch(ctx context.Context, topic *entity.Topic) ([]*entity.Article, error) {
+	var articles []*entity.Article
+
+	feeds := topic.RSSFeeds
+	if len(feeds) == 0 {
+		feeds = f.feeds
+	}
+
+	// Paylaşımlı genel kaynakların listesi
+	var generalFeeds = map[string]bool{
+		"https://news.ycombinator.com/rss":                            true,
+		"https://hnrss.org/frontpage":                                 true,
+		"https://dev.to/feed":                                         true,
+		"https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml": true,
+	}
+
+	for _, feedURL := range feeds {
+		// Eğer genel paylaşımlı kaynak ise filtre uygulansın (isShared = true)
+		// Özel küratörlü kaynak ise filtre uygulanmasın (isShared = false)
+		isShared := generalFeeds[feedURL]
+
+		feedArticles, err := f.parseFeed(ctx, feedURL, topic.Keywords, isShared)
+		if err != nil {
+			slog.Error("failed to parse RSS feed",
+				"url", feedURL, "error", err,
+			)
+			continue
+		}
+		articles = append(articles, feedArticles...)
+	}
+
+	return articles, nil
+}
+
 // FetchByKeywords retrieves items from all configured RSS feeds that match
 // any of the given keywords in their title or description.
 func (f *RSSFetcher) FetchByKeywords(ctx context.Context, keywords []valueobject.TopicKeyword) ([]*entity.Article, error) {
 	var articles []*entity.Article
 
 	for _, feedURL := range f.feeds {
-		feedArticles, err := f.parseFeed(ctx, feedURL, keywords)
+		feedArticles, err := f.parseFeed(ctx, feedURL, keywords, true)
 		if err != nil {
 			slog.Error("failed to parse RSS feed",
 				"url", feedURL, "error", err,
@@ -52,8 +87,8 @@ func (f *RSSFetcher) SourceType() valueobject.SourceType {
 	return valueobject.SourceRSS
 }
 
-// parseFeed parses a single RSS feed and returns articles matching keywords.
-func (f *RSSFetcher) parseFeed(ctx context.Context, feedURL string, keywords []valueobject.TopicKeyword) ([]*entity.Article, error) {
+// parseFeed parses a single RSS feed and returns articles. If applyFilter is true, matches keywords.
+func (f *RSSFetcher) parseFeed(ctx context.Context, feedURL string, keywords []valueobject.TopicKeyword, applyFilter bool) ([]*entity.Article, error) {
 	feed, err := f.parser.ParseURLWithContext(feedURL, ctx)
 	if err != nil {
 		return nil, fmt.Errorf("parsing feed %s: %w", feedURL, err)
@@ -61,7 +96,7 @@ func (f *RSSFetcher) parseFeed(ctx context.Context, feedURL string, keywords []v
 
 	var articles []*entity.Article
 	for _, item := range feed.Items {
-		if !f.itemMatchesKeywords(item, keywords) {
+		if applyFilter && !f.itemMatchesKeywords(item, keywords) {
 			continue
 		}
 		articles = append(articles, f.toArticle(item))

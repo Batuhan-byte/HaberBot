@@ -15,6 +15,7 @@ type mockAIProcessor struct {
 	port.AIProcessor
 	translateFunc func(ctx context.Context, title, content string) (string, string, error)
 	summarizeFunc func(ctx context.Context, content string) (string, error)
+	translateAndSummarizeFunc func(ctx context.Context, title, content string) (string, string, string, error)
 }
 
 func (m *mockAIProcessor) Translate(ctx context.Context, title, content string) (string, string, error) {
@@ -23,6 +24,13 @@ func (m *mockAIProcessor) Translate(ctx context.Context, title, content string) 
 
 func (m *mockAIProcessor) Summarize(ctx context.Context, content string) (string, error) {
 	return m.summarizeFunc(ctx, content)
+}
+
+func (m *mockAIProcessor) TranslateAndSummarize(ctx context.Context, title, content string) (string, string, string, error) {
+	if m.translateAndSummarizeFunc != nil {
+		return m.translateAndSummarizeFunc(ctx, title, content)
+	}
+	return "", "", "", nil
 }
 
 func TestSummarizeArticleUseCase_Execute(t *testing.T) {

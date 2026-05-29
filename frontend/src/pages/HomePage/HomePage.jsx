@@ -66,6 +66,13 @@ export default function HomePage() {
   });
 
   const topicsList = topics?.topics && Array.isArray(topics.topics) ? topics.topics : [];
+
+  const getCategoryName = useMemo(() => {
+    return (topicId) => {
+      const topic = topicsList.find(t => t.id === topicId);
+      return topic ? topic.name : 'Teknoloji';
+    };
+  }, [topicsList]);
   
   const rawArticlesList = isSearchActive 
     ? (searchResults?.articles || []) 
@@ -181,7 +188,10 @@ export default function HomePage() {
               <div className="manset-overlay"></div>
             </div>
             <div className="manset-body">
-              <span className="manset-badge">MANŞET</span>
+              <div className="flex gap-2 mb-2 items-center">
+                <span className="manset-badge">MANŞET</span>
+                <span className="manset-category-badge">{getCategoryName(topHeroArticle.topic_id)}</span>
+              </div>
               <h2 className="manset-title">{topHeroArticle.title_tr || topHeroArticle.title}</h2>
               <span className="manset-subtitle">
                 {stripHtmlTags(topHeroArticle.turkish_summary || topHeroArticle.summary || topHeroArticle.original_content).slice(0, 60)}...
@@ -201,7 +211,10 @@ export default function HomePage() {
         {secondHeroArticle ? (
           <Link to={`/haber/${secondHeroArticle.id}`} className="vurgu-card">
             <div>
-              <span className="vurgu-badge">GÜNDEM</span>
+              <div className="flex gap-2 items-center mb-1">
+                <span className="vurgu-badge">GÜNDEM</span>
+                <span className="manset-category-badge">{getCategoryName(secondHeroArticle.topic_id)}</span>
+              </div>
               <h2 className="vurgu-title mt-4">{secondHeroArticle.title_tr || secondHeroArticle.title}</h2>
             </div>
             <p className="vurgu-desc">
@@ -251,6 +264,7 @@ export default function HomePage() {
                   <div className="row-card-body">
                     <div className="row-card-meta">
                       <span className="row-card-badge">{article.source === 'hackernews' ? 'HN' : 'RSS'}</span>
+                      <span className="row-card-badge-category">{getCategoryName(article.topic_id)}</span>
                       <span>{formatRelativeDate(article.created_at || article.fetched_at)}</span>
                     </div>
                     <h3 className="row-card-title">{displayTitle}</h3>

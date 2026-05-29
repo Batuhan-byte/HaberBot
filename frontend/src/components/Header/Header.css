@@ -79,10 +79,10 @@
 }
 
 .menu-item.drawer-active {
-  color: #ff79c6 !important; /* Matches AI drawer glow color */
-  background-color: rgba(255, 121, 198, 0.08);
-  border-color: rgba(255, 121, 198, 0.15);
-  box-shadow: 0 0 15px rgba(255, 121, 198, 0.05);
+  color: #60a5fa !important; /* Matches AI drawer glow color */
+  background-color: rgba(96, 165, 250, 0.08);
+  border-color: rgba(96, 165, 250, 0.15);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.05);
 }
 
 .dropdown-indicator {
@@ -356,10 +356,10 @@
 .dropdown-glow-dot {
   width: 8px;
   height: 8px;
-  background-color: #ff79c6; /* Neon pink indicator */
+  background-color: #60a5fa; /* Neon blue indicator */
   border-radius: 50%;
   display: inline-block;
-  box-shadow: 0 0 10px #ff79c6;
+  box-shadow: 0 0 10px #60a5fa;
   animation: pulseGlow 1.5s infinite ease-in-out;
 }
 
@@ -493,9 +493,9 @@
   font-family: 'Syne', sans-serif;
   font-size: 0.65rem;
   font-weight: 800;
-  color: #ff79c6; /* Neon AI pink */
-  background-color: rgba(255, 121, 198, 0.15);
-  border: 1px solid rgba(255, 121, 198, 0.3);
+  color: #60a5fa; /* Neon AI blue */
+  background-color: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.3);
   padding: 3px 8px;
   border-radius: 4px;
   letter-spacing: 0.5px;

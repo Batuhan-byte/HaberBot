@@ -36,7 +36,7 @@ export default function SearchDropdown({ query, onSelect }) {
             <span>ÖNERİLEN HABERLER</span>
           </div>
           {articles.map((article, index) => {
-            const displayTitle = article.turkish_title || article.title;
+            const displayTitle = article.title_tr || article.title;
             const style = { animationDelay: `${index * 0.05}s` };
             return (
               <div 

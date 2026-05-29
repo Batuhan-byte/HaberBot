@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { api } from '../../services/api';
 import { formatRelativeDate } from '../../utils/formatDate';
 import Header from '../../components/Header/Header';
@@ -33,6 +33,20 @@ export default function SearchPage() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Fetch topics for category badges
+  const { data: topics } = useQuery({ 
+    queryKey: ['topics'], 
+    queryFn: api.getTopics 
+  });
+  const topicsList = topics?.topics && Array.isArray(topics.topics) ? topics.topics : [];
+
+  const getCategoryName = useMemo(() => {
+    return (topicId) => {
+      const topic = topicsList.find(t => t.id === topicId);
+      return topic ? topic.name : 'Teknoloji';
+    };
+  }, [topicsList]);
+
   // Reset page when search query parameter changes
   useEffect(() => {
     setPage(1);
@@ -45,7 +59,7 @@ export default function SearchPage() {
     queryKey: ['search-results', query, page],
     queryFn: () => api.searchArticles(query, '', page, limit),
     enabled: !!query,
-    keepPreviousData: true
+    placeholderData: keepPreviousData
   });
 
   const articles = searchResults?.articles || [];
@@ -145,7 +159,10 @@ export default function SearchPage() {
                     <div className="cat-manset-overlay"></div>
                   </div>
                   <div className="cat-manset-body">
-                    <span className="cat-manset-badge">EN ALAKALI SONUÇ</span>
+                    <div className="flex gap-2 mb-2 items-center">
+                      <span className="cat-manset-badge">EN ALAKALI SONUÇ</span>
+                      <span className="manset-category-badge">{getCategoryName(gridMainArticle.topic_id)}</span>
+                    </div>
                     <h2 className="cat-manset-title">{gridMainArticle.title_tr || gridMainArticle.title}</h2>
                   </div>
                 </Link>
@@ -165,7 +182,10 @@ export default function SearchPage() {
                         />
                       </div>
                       <div className="cat-sub-body">
-                        <span className="cat-sub-badge">BENZER SONUÇ</span>
+                        <div className="flex gap-2 items-center mb-1">
+                          <span className="cat-sub-badge">BENZER SONUÇ</span>
+                          <span className="manset-category-badge text-[8px] px-1 py-0.5">{getCategoryName(article.topic_id)}</span>
+                        </div>
                         <h3 className="cat-sub-title">{displayTitle}</h3>
                       </div>
                     </Link>
@@ -192,6 +212,7 @@ export default function SearchPage() {
                       <div>
                         <div className="flex items-center gap-2 text-[0.7rem] text-gray-500 mb-2">
                           <span className="bg-[#222222] text-gray-300 px-2 py-0.5 rounded uppercase font-bold">{article.source === 'hackernews' ? 'HN' : 'RSS'}</span>
+                          <span className="row-card-badge-category text-[9px] px-1.5 py-0.5">{getCategoryName(article.topic_id)}</span>
                           <span>{formatRelativeDate(article.created_at || article.fetched_at)}</span>
                         </div>
                         <h3 className="font-bold text-white leading-snug line-clamp-2 hover:text-[#3b82f6] transition-colors">{displayTitle}</h3>

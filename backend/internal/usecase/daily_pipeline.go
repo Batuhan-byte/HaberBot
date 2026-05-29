@@ -59,6 +59,21 @@ func (uc *DailyPipelineUseCase) ExecuteFetch(ctx context.Context) (int, error) {
 		totalFetched += fetched
 	}
 
+	// Perform periodic trim cleanup for all active topics
+	for _, topic := range topics {
+		if !topic.IsActive {
+			continue
+		}
+		if err := uc.fetchUC.TrimPending(ctx, topic.ID); err != nil {
+			slog.Error("failed periodic trim for topic", "topic", topic.Slug, "error", err)
+		}
+	}
+
+	// Perform periodic trim cleanup for NULL topic
+	if err := uc.fetchUC.TrimPending(ctx, ""); err != nil {
+		slog.Error("failed periodic trim for NULL topic", "error", err)
+	}
+
 	return totalFetched, nil
 }
 
